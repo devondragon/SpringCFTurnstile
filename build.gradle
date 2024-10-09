@@ -12,8 +12,8 @@ import com.vanniktech.maven.publish.SonatypeHost
 import com.vanniktech.maven.publish.JavaLibrary
 import com.vanniktech.maven.publish.JavadocJar
 
-group 'com.digitalsanctuary.springaiclient'
-version '1.1.0'
+group 'com.digitalsanctuary.cf.turnstile'
+version '1.1.1'
 description = 'SpringBoot Cloudflare Turnstile Library'
 
 ext {
@@ -107,7 +107,7 @@ mavenPublishing {
 
   pom {
     name = "Spring Cloudflare Turnstile Library"
-    description = "SpringBoot Cloudflare Turnstile Librar"
+    description = "SpringBoot Cloudflare Turnstile Library"
     inceptionYear = "2024"
     url = "https://github.com/devondragon/SpringCFTurnstile"
     licenses {
