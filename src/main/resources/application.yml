@@ -1,0 +1,7 @@
+# Spring Boot application configuration properties
+ds:
+  cf:
+    turnstile:
+      sitekey: # Turnstile Site Key
+      secret: # Turnstile Secret
+      url: https://challenges.cloudflare.com/turnstile/v0/siteverify # Turnstile API Endpoint

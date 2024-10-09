@@ -1,0 +1,6 @@
+ds:
+  cf:
+    turnstile:
+      sitekey: 1x00000000000000000000BB
+      secret: 1x0000000000000000000000000000000AA
+      url: https://challenges.cloudflare.com/turnstile/v0/siteverify # Turnstile API Endpoint

@@ -1,0 +1,19 @@
+{
+    "properties": [
+        {
+            "name": "ds.cf.turnstile.url",
+            "type": "java.lang.String",
+            "description": "Cloudflare Turnstile API Endpoint URL'"
+        },
+        {
+            "name": "ds.cf.turnstile.secret",
+            "type": "java.lang.String",
+            "description": "Your Cloudflare Turnstile API Secret"
+        },
+        {
+            "name": "ds.cf.turnstile.sitekey",
+            "type": "java.lang.String",
+            "description": "Your Cloudflare Turnstile Site Key"
+        }
+    ]
+}

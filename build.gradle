@@ -1,0 +1,137 @@
+plugins {
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'com.github.ben-manes.versions' version '0.51.0'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'com.vanniktech.maven.publish' version '0.29.0'
+}
+
+import com.vanniktech.maven.publish.SonatypeHost
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
+
+group 'com.digitalsanctuary.springaiclient'
+version '1.1.0'
+description = 'SpringBoot Cloudflare Turnstile Library'
+
+ext {
+    springBootVersion = '3.3.4'
+    lombokVersion = '1.18.34'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot dependencies
+    implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+
+    // Lombok dependencies
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    // Lombok dependencies for test classes
+    testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+    testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    // Testing dependencies
+    testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+    testImplementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.named('bootJar') {
+    enabled = false
+}
+
+tasks.named('jar') {
+    enabled = true
+    archiveBaseName.set('spring-cf-turnstile')
+    archiveClassifier.set('')
+}
+
+// Run tests with different JDK versions
+tasks.register('testJdk17', Test) {
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform()
+    doFirst {
+        println("Running tests with JDK 17")
+    }
+}
+
+tasks.register('testJdk21', Test) {
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform()
+    doFirst {
+        println("Running tests with JDK 21")
+    }
+}
+
+// Task that runs both test tasks
+tasks.register('testAll') {
+    dependsOn(tasks.named('testJdk17'), tasks.named('testJdk21'))
+}
+
+// Ensure the default 'test' task triggers both test tasks
+tasks.test {
+    dependsOn(tasks.named('testAll'))
+}
+
+// Maven Central Publishing Tasks
+mavenPublishing {
+  configure(new JavaLibrary(new JavadocJar.Javadoc(), true))
+  publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+  signAllPublications()
+  coordinates("com.digitalsanctuary", "spring-cf-turnstile", project.version)
+
+  pom {
+    name = "Spring Cloudflare Turnstile Library"
+    description = "SpringBoot Cloudflare Turnstile Librar"
+    inceptionYear = "2024"
+    url = "https://github.com/devondragon/SpringCFTurnstile"
+    licenses {
+      license {
+        name = "The Apache License, Version 2.0"
+        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    }
+    developers {
+      developer {
+        id = "devondragon"
+        name = "Devon Hillard"
+        url = "https://github.com/devondragon/"
+      }
+    }
+    scm {
+      url = "https://github.com/devondragon/SpringCFTurnstile"
+      connection = "scm:git:git@github.com:devondragon/SpringCFTurnstile.git"
+      developerConnection = "scm:git:ssh://git@github.com:devondragon/SpringCFTurnstile.git"
+    }
+  }
+}
+
+tasks.named("publishMavenPublicationToMavenCentralRepository") {
+    dependsOn("signMavenPublication")
+}
