@@ -1,4 +1,4 @@
-package com.digitalsanctuary.cf;
+package com.digitalsanctuary.cf.test;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import lombok.extern.slf4j.Slf4j;

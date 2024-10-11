@@ -1,11 +1,12 @@
-package com.digitalsanctuary.cf.turnstile;
+package com.digitalsanctuary.cf.test.turnstile;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import com.digitalsanctuary.cf.TestApplication;
+import com.digitalsanctuary.cf.test.TestApplication;
+import com.digitalsanctuary.cf.turnstile.TurnstileValidationService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

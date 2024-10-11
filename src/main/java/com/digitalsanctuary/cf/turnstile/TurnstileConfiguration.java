@@ -28,6 +28,11 @@ public class TurnstileConfiguration {
         return builder.build();
     }
 
+    @Bean
+    public TurnstileValidationService turnstileValidationService() {
+        return new TurnstileValidationService(turnstileRestTemplate(new RestTemplateBuilder()));
+    }
+
     /**
      * Method executed after the bean initialization.
      * <p>
