@@ -2,6 +2,7 @@ package com.digitalsanctuary.cf.turnstile;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +38,7 @@ public class TurnstileValidationService {
      *
      * @param restTemplate the RestTemplate to be used for making HTTP requests.
      */
-    public TurnstileValidationService(RestTemplate restTemplate) {
+    public TurnstileValidationService(@Qualifier("turnstileRestTemplate") RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

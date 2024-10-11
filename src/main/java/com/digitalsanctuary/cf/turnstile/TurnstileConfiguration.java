@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TurnstileConfiguration {
 
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    public RestTemplate turnstileRestTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
 
