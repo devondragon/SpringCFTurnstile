@@ -13,7 +13,7 @@ import com.vanniktech.maven.publish.JavaLibrary
 import com.vanniktech.maven.publish.JavadocJar
 
 group 'com.digitalsanctuary.cf.turnstile'
-version '1.1.4'
+version '1.1.5-SNAPSHOT'
 description = 'SpringBoot Cloudflare Turnstile Library'
 
 ext {
@@ -135,3 +135,18 @@ mavenPublishing {
 tasks.named("publishMavenPublicationToMavenCentralRepository") {
     dependsOn("signMavenPublication")
 }
+
+publishing {
+    repositories {
+        maven {
+            name = 'reposiliteRepository'
+            url = uri('https://reposilite.tr0n.io/private')
+            credentials(PasswordCredentials)
+            authentication {
+                 basic(BasicAuthentication)
+            }
+        }
+        // more repositories can go here
+    }
+}
+

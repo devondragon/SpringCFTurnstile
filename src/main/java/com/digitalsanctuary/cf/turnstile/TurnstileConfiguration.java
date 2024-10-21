@@ -1,15 +1,15 @@
 package com.digitalsanctuary.cf.turnstile;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.context.annotation.Import;
+import com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties;
+import com.digitalsanctuary.cf.turnstile.config.TurnstileServiceConfig;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * A configuration class for the Spring AI Client.
+ * A configuration class for the Cloudflare Turnstile Client Service.
  * <p>
  * This class is responsible for configuring the necessary components and dependencies required by the client.
  * </p>
@@ -21,22 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @AutoConfiguration
+@Import({TurnstileServiceConfig.class, TurnstileConfigProperties.class})
 public class TurnstileConfiguration {
-
-    @Bean
-    public RestTemplate turnstileRestTemplate(RestTemplateBuilder builder) {
-        return builder.build();
-    }
-
-    @Bean
-    public TurnstileValidationService turnstileValidationService() {
-        return new TurnstileValidationService(turnstileRestTemplate(new RestTemplateBuilder()));
-    }
 
     /**
      * Method executed after the bean initialization.
      * <p>
-     * This method logs a message indicating that the DigitalSanctuary Spring AI Client has been loaded.
+     * This method logs a message indicating that the DigitalSanctuary Cloudflare Turnstile Service has been loaded.
      * </p>
      */
     @PostConstruct

@@ -115,7 +115,7 @@ The Turnstile token is passed as a request parameter named `cf-turnstile-respons
 
 ```java
 ...
-import com.digitalsanctuary.cf.turnstile.TurnstileValidationService; // Import the TurnstileValidationService
+import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService; // Import the TurnstileValidationService
 ...
 @Autowired
 private TurnstileValidationService turnstileValidationService; // Inject the TurnstileValidationService
