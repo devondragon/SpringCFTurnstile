@@ -36,7 +36,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>com.digitalsanctuary</groupId>
     <artifactId>ds-spring-cf-turnstile</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
 </dependency>
 ```
 
@@ -46,7 +46,7 @@ Add the following dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.digitalsanctuary:ds-spring-cf-turnstile:1.1.4'
+    implementation 'com.digitalsanctuary:ds-spring-cf-turnstile:1.1.5'
 }
 ```
 
@@ -115,7 +115,7 @@ The Turnstile token is passed as a request parameter named `cf-turnstile-respons
 
 ```java
 ...
-import com.digitalsanctuary.cf.turnstile.TurnstileValidationService; // Import the TurnstileValidationService
+import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService; // Import the TurnstileValidationService
 ...
 @Autowired
 private TurnstileValidationService turnstileValidationService; // Inject the TurnstileValidationService

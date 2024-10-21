@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import com.digitalsanctuary.cf.test.TestApplication;
-import com.digitalsanctuary.cf.turnstile.TurnstileValidationService;
+import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

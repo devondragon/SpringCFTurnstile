@@ -1,4 +1,4 @@
-package com.digitalsanctuary.cf.turnstile;
+package com.digitalsanctuary.cf.turnstile.dto;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
