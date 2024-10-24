@@ -11,7 +11,7 @@ You will need a Cloudflare Account, and to create a Turnstile Widget for your si
 
 ## Features
 
-- Easy configuration using Spring Boot's `application.yml`.
+- Easy configuration using Spring Boot's `application.yml` or `application.properties`.
 - Handles API requests and responses seamlessly.
 - Provides a simple interface validating Cloudflare Turnstile tokens.
 
