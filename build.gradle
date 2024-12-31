@@ -155,9 +155,9 @@ tasks.register("publishReposilite") {
 
 tasks.register("publishMavenCentral") {
     dependsOn("publishAndReleaseToMavenCentral")
-    doFirst {
-        project.gradle.startParameter.configurationCache = false
-    }
+    // doFirst {
+    //     project.gradle.startParameter.configurationCache = false
+    // }
 }
 
 tasks.register("publishLocal") {

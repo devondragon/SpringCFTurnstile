@@ -1,3 +1,13 @@
+## [1.1.7] - 2024-12-31
+### Features
+- Gradle Release Plugin has been updated to a new version: '1.1.7-SNAPSHOT'.
+
+### Fixes
+- Updated build.gradle by commenting out the version and adding dependencies necessary for post-release tasks.
+
+### Breaking Changes
+- PublishReposilite dependency in task "afterReleaseBuild" has been commented out, which may disrupt build processes depending on it.
+
 ## [1.1.6-SNAPSHOT] - 2024-12-31
 Based on the commit messages, here is the changelog:
 
