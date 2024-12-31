@@ -169,7 +169,7 @@ tasks.register("publishLocal") {
 
 task generateAIChangelog(type: Exec) {
     def newVersion = project.version
-    commandLine 'python3', 'generate_changelog.py', newVersion
+    commandLine 'python', 'generate_changelog.py', newVersion
 }
 
 release {
