@@ -1,4 +1,18 @@
 ## [1.1.6-SNAPSHOT] - 2024-12-31
+Based on the commit messages, here is the changelog:
+
+### Features
+- None
+
+### Fixes
+- Updated version in gradle.properties for consistency
+- Bump version to 1.1.6 in gradle.properties
+
+
+### Breaking Changes
+- None
+
+## [1.1.6-SNAPSHOT] - 2024-12-31
 ### Features
 - Added versioning information in `gradle.properties`.
 - Added Spring Boot web starter as a test implementation dependency.
