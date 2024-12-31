@@ -146,3 +146,31 @@ publishing {
     }
 }
 
+// Maven Publishing Aliases
+
+tasks.register("publishReposilite") {
+    dependsOn("publishMavenPublicationToReposiliteRepository")
+}
+
+tasks.register("publishMavenCentral") {
+    dependsOn("publishAndReleaseToMavenCentral")
+    doFirst {
+        project.gradle.startParameter.configurationCache = false
+    }
+}
+
+tasks.register("publishLocal") {
+    dependsOn("publishToMavenLocal")
+    // doFirst {
+    //     project.gradle.startParameter.refreshDependencies = true
+    // }
+}
+
+task generateAIChangelog(type: Exec) {
+    def newVersion = project.version
+    commandLine 'python3', 'generate_changelog.py', newVersion
+}
+
+release {
+    beforeReleaseBuild.dependsOn generateAIChangelog
+}
