@@ -39,14 +39,35 @@ public class TurnstileValidationService {
 
     /**
      * Method called after the bean is initialized. Logs the startup information including the Turnstile URL and Sitekey.
+     * Also validates the required configuration properties.
      */
     @PostConstruct
     public void onStartup() {
         log.info("TurnstileValidationService started");
         log.info("Turnstile URL: {}", properties.getUrl());
         log.info("Turnstile Sitekey: {}", properties.getSitekey());
+        
+        // Validate required configuration
+        if (properties.getSecret() == null || properties.getSecret().isBlank()) {
+            log.error("Turnstile secret key is not configured. Validation will fail.");
+        }
+        
+        if (properties.getUrl() == null || properties.getUrl().isBlank()) {
+            log.error("Turnstile URL is not configured. Validation will fail.");
+        }
     }
 
+    /**
+     * Validates the Turnstile response token by making a request to Cloudflare's Turnstile API.
+     * This is a convenience method that doesn't require a remote IP.
+     *
+     * @param token the response token to be validated.
+     * @return true if the response is valid and successful, false otherwise.
+     */
+    public boolean validateTurnstileResponse(String token) {
+        return validateTurnstileResponse(token, null);
+    }
+    
     /**
      * Validates the Turnstile response token by making a request to Cloudflare's Turnstile API.
      *
@@ -55,6 +76,41 @@ public class TurnstileValidationService {
      * @return true if the response is valid and successful, false otherwise.
      */
     public boolean validateTurnstileResponse(String token, String remoteIp) {
+        // Validate input parameters
+        if (token == null) {
+            log.warn("Turnstile validation failed: token cannot be null");
+            return false;
+        }
+        
+        if (token.isEmpty() || token.isBlank()) {
+            log.warn("Turnstile validation failed: token cannot be empty or blank");
+            return false;
+        }
+        
+        // Basic format validation - Cloudflare tokens typically start with '0.' or '1.' followed by alphanumeric chars
+        // and should be reasonably sized (typically 100+ chars)
+        if (token.length() < 20) {
+            log.warn("Turnstile validation failed: token appears to be too short to be valid (length: {})", token.length());
+            return false;
+        }
+        
+        // Validate remoteIp if provided
+        if (remoteIp != null && (remoteIp.isEmpty() || remoteIp.isBlank())) {
+            log.warn("Turnstile validation: ignoring empty or blank remoteIp");
+            remoteIp = null;
+        }
+        
+        // Validate that we have the required configuration
+        if (properties.getSecret() == null || properties.getSecret().isBlank()) {
+            log.error("Turnstile validation failed: secret key is not configured");
+            return false;
+        }
+        
+        if (properties.getUrl() == null || properties.getUrl().isBlank()) {
+            log.error("Turnstile validation failed: URL is not configured");
+            return false;
+        }
+        
         // Create a JSON request body
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("secret", properties.getSecret());

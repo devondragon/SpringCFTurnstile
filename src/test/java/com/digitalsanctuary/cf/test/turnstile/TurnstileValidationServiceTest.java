@@ -19,8 +19,28 @@ public class TurnstileValidationServiceTest {
 
     @Test
     public void testValidateTurnstileResponse_Success() {
-
-        boolean response = turnstileValidationService.validateTurnstileResponse("testToken", "127.0.0.1");
+        // Create a token that will pass our basic validation (length >= 20)
+        String validLengthToken = "0123456789012345678901234567890123456789";
+        
+        boolean response = turnstileValidationService.validateTurnstileResponse(validLengthToken, "127.0.0.1");
         assertTrue(response);
+    }
+    
+    @Test
+    public void testValidateTurnstileResponse_NullToken() {
+        boolean response = turnstileValidationService.validateTurnstileResponse(null, "127.0.0.1");
+        assertTrue(!response); // Should fail with null token
+    }
+    
+    @Test
+    public void testValidateTurnstileResponse_EmptyToken() {
+        boolean response = turnstileValidationService.validateTurnstileResponse("", "127.0.0.1");
+        assertTrue(!response); // Should fail with empty token
+    }
+    
+    @Test
+    public void testValidateTurnstileResponse_ShortToken() {
+        boolean response = turnstileValidationService.validateTurnstileResponse("12345", "127.0.0.1");
+        assertTrue(!response); // Should fail with token that's too short
     }
 }
