@@ -9,14 +9,32 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * A configuration class for the Cloudflare Turnstile Client Service.
+ * Main auto-configuration class for the Spring Cloudflare Turnstile integration.
  * <p>
- * This class is responsible for configuring the necessary components and dependencies required by the client.
+ * This class serves as the entry point for Spring Boot's auto-configuration mechanism to
+ * automatically set up Cloudflare Turnstile integration when the library is included in a project.
+ * It imports the necessary configuration components such as property management and service configuration.
  * </p>
  * <p>
- * The {@link #onStartup()} method is annotated with {@link jakarta.annotation.PostConstruct} and is executed after the bean initialization. It logs a
- * message indicating that the DigitalSanctuary Spring AI Client has been loaded.
+ * To use this auto-configuration, include this library in your Spring Boot project and configure
+ * the required properties in your application.yml or application.properties file:
  * </p>
+ * <pre>
+ * ds:
+ *   cf:
+ *     turnstile:
+ *       sitekey: your-turnstile-site-key
+ *       secret: your-turnstile-secret-key
+ *       url: https://challenges.cloudflare.com/turnstile/v0/siteverify
+ * </pre>
+ * <p>
+ * The {@link #onStartup()} method is annotated with {@link jakarta.annotation.PostConstruct} and is executed 
+ * after the bean initialization to log a confirmation message that the Cloudflare Turnstile Service has been loaded.
+ * </p>
+ * 
+ * @see com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties
+ * @see com.digitalsanctuary.cf.turnstile.config.TurnstileServiceConfig
+ * @see com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService
  */
 @Slf4j
 @Configuration
