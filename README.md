@@ -93,7 +93,7 @@ If you are using Thymeleaf, you can use the following code:
 ```html
 <form id="login-form" action="#" th:action="@{/login}" method="post">
     <input type="email" name="email" placeholder="Email" required>
-    <div class="cf-turnstile" th:data-sitekey="${@turnstileValidationService.getTurnsiteSitekey()}"></div>
+    <div class="cf-turnstile" th:data-sitekey="${@turnstileValidationService.getTurnstileSitekey()}"></div>
     <button type="submit">Login</button>
 </form>
 ```
@@ -104,49 +104,112 @@ And the site key will be automatically populated from the `application.yml` file
 
 #### Back End
 
-Use the `TurnstileService` to validate Turnstile tokens from your Controller:
+Use the `TurnstileValidationService` to validate Turnstile tokens from your Controller:
 
 The Turnstile token is passed as a request parameter named `cf-turnstile-response`. You can access the token by adding a `@RequestParam` annotation to your controller method.
 
 ```java
-...(Model model, @RequestParam("cf-turnstile-response") String turnstileResponse, .....) {
+@RequestParam(name = "cf-turnstile-response", required = true) String turnstileResponse
 ```
 
+Here's a complete example:
 
 ```java
-...
-import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService; // Import the TurnstileValidationService
-...
-@Autowired
-private TurnstileValidationService turnstileValidationService; // Inject the TurnstileValidationService
-...
-@PostMapping("/login")
-	public String login(Model model, @RequestParam String email,
-      @RequestParam("cf-turnstile-response") String turnstileResponse,
-			HttpServletRequest request) {
-		// Get the client IP address (optional but recommended)
-		String clientIpAddress = turnstileValidationService.getClientIpAddress(request);
+import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
-		// Validate the Turnstile response token
-		boolean turnstileValid = turnstileValidationService.validateTurnstileResponse(turnstileResponse, clientIpAddress);
+@Slf4j
+@Controller
+public class LoginController {
 
-		if (!turnstileValid) {
-			log.error("Turnstile validation failed for login request with email: " + email);
-			return "error";
-		}
+    @Autowired
+    private TurnstileValidationService turnstileValidationService;
+    
+    @Autowired
+    private UserService userService;
+    
+    @PostMapping("/login")
+    public String login(Model model, 
+                      @RequestParam String email,
+                      @RequestParam(name = "cf-turnstile-response", required = true) String turnstileResponse,
+                      HttpServletRequest request) {
+                      
+        // Get the client IP address (recommended for security)
+        String clientIpAddress = turnstileValidationService.getClientIpAddress(request);
 
-		// Otherwise handle the login process normally...
-		if (service.handleLogin(email)) {
-      ...
-	}
+        // Validate the Turnstile response token
+        boolean turnstileValid = turnstileValidationService.validateTurnstileResponse(turnstileResponse, clientIpAddress);
+
+        if (!turnstileValid) {
+            log.warn("Turnstile validation failed for login request with email: {}", email);
+            model.addAttribute("error", "Security verification failed. Please try again.");
+            return "login";
+        }
+
+        // Handle the login process normally
+        if (userService.authenticateUser(email)) {
+            return "redirect:/dashboard";
+        } else {
+            model.addAttribute("error", "Invalid login credentials");
+            return "login";
+        }
+    }
 }
 ```
 
+#### Alternative Method (Without IP)
+
+If you don't need to validate the client IP address, you can use the simplified method:
+
+```java
+boolean turnstileValid = turnstileValidationService.validateTurnstileResponse(turnstileResponse);
+```
+
+
+## Security Best Practices
+
+When integrating Cloudflare Turnstile into your application, keep these security considerations in mind:
+
+1. **Protect your secret key**: Never expose your Turnstile Secret key in client-side code or public repositories.
+
+2. **Always validate on the server**: Never rely solely on client-side validation. Always validate Turnstile tokens on your server.
+
+3. **Use IP validation**: When possible, include the client's IP address in the validation request for an additional layer of security.
+
+4. **Implement proper error handling**: Don't provide detailed error messages to users that could reveal implementation details.
+
+5. **Add rate limiting**: Consider implementing rate limiting on endpoints that use Turnstile validation to prevent abuse.
+
+6. **Monitor validation failures**: Track and alert on unusual patterns of validation failures, which could indicate an attack.
+
+## Architecture
+
+Spring Cloudflare Turnstile uses Spring Boot's auto-configuration to seamlessly integrate with your application:
+
+1. **Auto-configuration**: The library is automatically configured when included in your Spring Boot application.
+
+2. **Configuration Properties**: Properties are loaded from your application configuration files.
+
+3. **Service Layer**: The `TurnstileValidationService` provides methods for validating tokens and retrieving configuration.
+
+4. **HTTP Client**: Uses Spring's `RestClient` to communicate with Cloudflare's API.
+
+5. **DTO Layer**: Response objects map directly to Cloudflare's API responses.
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the Apache License 2.0. See the [LICENSE](http://www.apache.org/licenses/LICENSE-2.0) file for details.
 
 ## Contact
 
-For any questions or support, please open an issue on the GitHub repository.
+For questions or support, please open an issue on the [GitHub repository](https://github.com/devondragon/SpringCFTurnstile/issues).
