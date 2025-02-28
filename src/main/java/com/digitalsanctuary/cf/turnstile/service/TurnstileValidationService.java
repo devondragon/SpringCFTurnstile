@@ -78,8 +78,19 @@ public class TurnstileValidationService {
      * Gets the Turnstile Sitekey.
      *
      * @return the Turnstile Sitekey.
+     * @deprecated Use {@link #getTurnstileSitekey()} instead. Will be removed in a future version.
      */
+    @Deprecated
     public String getTurnsiteSitekey() {
+        return getTurnstileSitekey();
+    }
+    
+    /**
+     * Gets the Turnstile Sitekey.
+     *
+     * @return the Turnstile Sitekey.
+     */
+    public String getTurnstileSitekey() {
         return properties.getSitekey();
     }
 
