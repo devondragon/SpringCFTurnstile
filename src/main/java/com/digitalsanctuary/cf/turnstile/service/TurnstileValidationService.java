@@ -7,16 +7,27 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties;
 import com.digitalsanctuary.cf.turnstile.dto.TurnstileResponse;
+import com.digitalsanctuary.cf.turnstile.dto.ValidationResult;
+import com.digitalsanctuary.cf.turnstile.exception.TurnstileConfigurationException;
+import com.digitalsanctuary.cf.turnstile.exception.TurnstileNetworkException;
+import com.digitalsanctuary.cf.turnstile.exception.TurnstileValidationException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Service for validating responses from Cloudflare's Turnstile API. This service uses a RestTemplate to send validation requests and process
- * responses.
+ * Service for validating responses from Cloudflare's Turnstile API.
+ * <p>
+ * This service provides methods to validate Turnstile tokens with the Cloudflare API,
+ * handling various error scenarios with appropriate exceptions and detailed validation
+ * results.
+ * </p>
  */
 @Slf4j
 @Service
@@ -38,8 +49,9 @@ public class TurnstileValidationService {
     }
 
     /**
-     * Method called after the bean is initialized. Logs the startup information including the Turnstile URL and Sitekey.
-     * Also validates the required configuration properties.
+     * Method called after the bean is initialized. Logs the startup information and validates the required configuration.
+     * 
+     * @throws TurnstileConfigurationException if required configuration properties are missing
      */
     @PostConstruct
     public void onStartup() {
@@ -70,28 +82,64 @@ public class TurnstileValidationService {
     
     /**
      * Validates the Turnstile response token by making a request to Cloudflare's Turnstile API.
+     * This method returns a boolean result and handles all exceptions internally.
      *
      * @param token the response token to be validated.
      * @param remoteIp the remote IP address of the client (optional).
      * @return true if the response is valid and successful, false otherwise.
      */
     public boolean validateTurnstileResponse(String token, String remoteIp) {
+        try {
+            ValidationResult result = validateTurnstileResponseDetailed(token, remoteIp);
+            return result.isSuccess();
+        } catch (Exception e) {
+            log.error("Unexpected error during Turnstile validation: {}", e.getMessage(), e);
+            return false;
+        }
+    }
+    
+    /**
+     * Validates the Turnstile response token by making a request to Cloudflare's Turnstile API.
+     * This is a convenience method that doesn't require a remote IP.
+     *
+     * @param token the response token to be validated.
+     * @return a ValidationResult object with detailed information about the validation outcome.
+     * @throws TurnstileConfigurationException if the service is not properly configured
+     * @throws TurnstileNetworkException if a network error occurs during validation
+     * @throws TurnstileValidationException if the token is rejected by Cloudflare
+     */
+    public ValidationResult validateTurnstileResponseDetailed(String token) {
+        return validateTurnstileResponseDetailed(token, null);
+    }
+    
+    /**
+     * Validates the Turnstile response token by making a request to Cloudflare's Turnstile API.
+     * This method provides detailed validation results and throws specific exceptions for different error scenarios.
+     *
+     * @param token the response token to be validated.
+     * @param remoteIp the remote IP address of the client (optional).
+     * @return a ValidationResult object with detailed information about the validation outcome.
+     * @throws TurnstileConfigurationException if the service is not properly configured
+     * @throws TurnstileNetworkException if a network error occurs during validation
+     * @throws TurnstileValidationException if the token is rejected by Cloudflare
+     */
+    public ValidationResult validateTurnstileResponseDetailed(String token, String remoteIp) {
         // Validate input parameters
         if (token == null) {
             log.warn("Turnstile validation failed: token cannot be null");
-            return false;
+            return ValidationResult.inputError("Token cannot be null");
         }
         
         if (token.isEmpty() || token.isBlank()) {
             log.warn("Turnstile validation failed: token cannot be empty or blank");
-            return false;
+            return ValidationResult.inputError("Token cannot be empty or blank");
         }
         
         // Basic format validation - Cloudflare tokens typically start with '0.' or '1.' followed by alphanumeric chars
         // and should be reasonably sized (typically 100+ chars)
         if (token.length() < 20) {
             log.warn("Turnstile validation failed: token appears to be too short to be valid (length: {})", token.length());
-            return false;
+            return ValidationResult.inputError("Token is too short to be valid (length: " + token.length() + ")");
         }
         
         // Validate remoteIp if provided
@@ -102,13 +150,15 @@ public class TurnstileValidationService {
         
         // Validate that we have the required configuration
         if (properties.getSecret() == null || properties.getSecret().isBlank()) {
-            log.error("Turnstile validation failed: secret key is not configured");
-            return false;
+            String msg = "Turnstile secret key is not configured";
+            log.error(msg);
+            throw new TurnstileConfigurationException(msg);
         }
         
         if (properties.getUrl() == null || properties.getUrl().isBlank()) {
-            log.error("Turnstile validation failed: URL is not configured");
-            return false;
+            String msg = "Turnstile URL is not configured";
+            log.error(msg);
+            throw new TurnstileConfigurationException(msg);
         }
         
         // Create a JSON request body
@@ -120,13 +170,44 @@ public class TurnstileValidationService {
         // Make the request to Cloudflare's Turnstile API
         try {
             TurnstileResponse response = turnstileRestClient.post().uri(properties.getUrl())
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).body(requestBody).retrieve().body(TurnstileResponse.class);
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(requestBody)
+                    .retrieve()
+                    .body(TurnstileResponse.class);
 
             log.debug("Turnstile response: {}", response);
-            return response != null && response.isSuccess();
+            
+            if (response == null) {
+                log.warn("Turnstile API returned null response");
+                return ValidationResult.networkError("Cloudflare returned an empty response");
+            }
+            
+            if (response.isSuccess()) {
+                return ValidationResult.success();
+            } else {
+                log.warn("Turnstile validation failed with error codes: {}", response.getErrorCodes());
+                throw new TurnstileValidationException("Token validation failed", response.getErrorCodes());
+            }
+            
+        } catch (HttpClientErrorException e) {
+            // 4xx response status codes (client errors)
+            log.error("Client error during Turnstile validation: {}", e.getMessage(), e);
+            throw new TurnstileNetworkException("Client error: " + e.getMessage(), e);
+        } catch (HttpServerErrorException e) {
+            // 5xx response status codes (server errors)
+            log.error("Server error during Turnstile validation: {}", e.getMessage(), e);
+            throw new TurnstileNetworkException("Server error: " + e.getMessage(), e);
+        } catch (ResourceAccessException e) {
+            // Network-related exceptions (timeouts, connection errors, etc.)
+            log.error("Network error during Turnstile validation: {}", e.getMessage(), e);
+            throw new TurnstileNetworkException("Network error: " + e.getMessage(), e);
+        } catch (TurnstileValidationException e) {
+            // Re-throw the TurnstileValidationException
+            throw e;
         } catch (Exception e) {
-            log.error("Error validating Turnstile response: {}", e.getMessage(), e);
-            return false;
+            // Catch-all for any other unexpected exceptions
+            log.error("Unexpected error during Turnstile validation: {}", e.getMessage(), e);
+            throw new TurnstileNetworkException("Unexpected error: " + e.getMessage(), e);
         }
     }
 
