@@ -14,6 +14,9 @@ You will need a Cloudflare Account, and to create a Turnstile Widget for your si
 - Easy configuration using Spring Boot's `application.yml` or `application.properties`.
 - Handles API requests and responses seamlessly.
 - Provides a simple interface validating Cloudflare Turnstile tokens.
+- Includes monitoring and metrics via Spring Actuator integration.
+- Health checks to verify Cloudflare connectivity and service status.
+- Detailed validation statistics for operational visibility.
 
 
 ## Getting Started
@@ -64,6 +67,11 @@ ds:
     turnstile:
       sitekey: # Turnstile Site Key
       secret: # Turnstile Secret
+      # Optional monitoring configuration
+      metrics:
+        enabled: true
+        health-check-enabled: true
+        error-threshold: 10
 ```
 
 
@@ -188,6 +196,58 @@ When integrating Cloudflare Turnstile into your application, keep these security
 
 6. **Monitor validation failures**: Track and alert on unusual patterns of validation failures, which could indicate an attack.
 
+## Monitoring and Metrics
+
+SpringCFTurnstile includes comprehensive monitoring and metrics capabilities through Spring Boot Actuator integration.
+
+### Available Metrics
+
+The following metrics are automatically collected and can be accessed through Spring Boot Actuator:
+
+- `turnstile.validation.requests`: Total number of validation requests
+- `turnstile.validation.success`: Number of successful validations
+- `turnstile.validation.errors`: Number of failed validations
+- `turnstile.validation.errors.network`: Network-related errors
+- `turnstile.validation.errors.config`: Configuration errors
+- `turnstile.validation.errors.token`: Invalid token errors
+- `turnstile.validation.errors.input`: Input validation errors
+- `turnstile.validation.response.time`: Response time metrics for Turnstile API calls
+
+### Health Check Endpoint
+
+A custom health indicator is included that reports on the Turnstile service status. It will check:
+
+- Proper service configuration (secret key, URL)
+- Error rate compared to configured threshold
+- Validation statistics
+
+### Configuration
+
+Metrics and monitoring can be configured in your `application.yml`:
+
+```yaml
+ds:
+  cf:
+    turnstile:
+      metrics:
+        # Enable/disable metrics collection
+        enabled: true
+        # Enable/disable health check endpoint
+        health-check-enabled: true
+        # Set error threshold percentage for health degradation
+        error-threshold: 10
+```
+
+### Integration with Monitoring Systems
+
+The metrics can be integrated with monitoring systems such as Prometheus, Grafana, and others through standard Spring Boot Actuator endpoints.
+
+To enable full monitoring capabilities, include Spring Boot Actuator in your project:
+
+```groovy
+implementation 'org.springframework.boot:spring-boot-starter-actuator'
+```
+
 ## Architecture
 
 Spring Cloudflare Turnstile uses Spring Boot's auto-configuration to seamlessly integrate with your application:
@@ -200,7 +260,11 @@ Spring Cloudflare Turnstile uses Spring Boot's auto-configuration to seamlessly 
 
 4. **HTTP Client**: Uses Spring's `RestClient` to communicate with Cloudflare's API.
 
-5. **DTO Layer**: Response objects map directly to Cloudflare's API responses.
+5. **Metrics Layer**: Metrics collection through Micrometer and Spring Boot Actuator.
+
+6. **Health Indicators**: Health checks to verify Cloudflare connectivity and service status.
+
+7. **DTO Layer**: Response objects map directly to Cloudflare's API responses.
 
 ## Contributing
 

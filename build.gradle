@@ -34,6 +34,7 @@ repositories {
 dependencies {
     // Spring Boot dependencies
     compileOnly "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    compileOnly "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
 
     // Lombok dependencies
     compileOnly "org.projectlombok:lombok:$lombokVersion"
