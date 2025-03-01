@@ -14,6 +14,24 @@
             "name": "ds.cf.turnstile.sitekey",
             "type": "java.lang.String",
             "description": "Your Cloudflare Turnstile Site Key"
+        },
+        {
+            "name": "ds.cf.turnstile.metrics.enabled",
+            "type": "java.lang.Boolean",
+            "description": "Enable or disable Turnstile metrics collection with Micrometer",
+            "defaultValue": true
+        },
+        {
+            "name": "ds.cf.turnstile.metrics.health-check-enabled",
+            "type": "java.lang.Boolean",
+            "description": "Enable or disable Turnstile health check endpoint",
+            "defaultValue": true
+        },
+        {
+            "name": "ds.cf.turnstile.metrics.error-threshold",
+            "type": "java.lang.Integer",
+            "description": "Threshold for error rate percentage that triggers health status degradation",
+            "defaultValue": 10
         }
     ]
 }

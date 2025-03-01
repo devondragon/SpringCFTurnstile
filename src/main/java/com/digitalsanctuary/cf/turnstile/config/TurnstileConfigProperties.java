@@ -23,6 +23,10 @@ import lombok.Data;
  *       sitekey: your-turnstile-site-key
  *       secret: your-turnstile-secret-key
  *       url: https://challenges.cloudflare.com/turnstile/v0/siteverify
+ *       metrics:
+ *         enabled: true
+ *         health-check-enabled: true
+ *         error-threshold: 10
  * </pre>
  * <p>
  * To obtain your Turnstile site key and secret, you need to create a Turnstile widget in your
@@ -52,4 +56,32 @@ public class TurnstileConfigProperties {
      */
     private String url;
 
+    /**
+     * Configuration for metrics and monitoring.
+     */
+    private Metrics metrics = new Metrics();
+
+    /**
+     * Nested class for metrics configuration properties.
+     */
+    @Data
+    public static class Metrics {
+
+        /**
+         * Whether metrics collection is enabled. Defaults to true.
+         */
+        private boolean enabled = true;
+
+        /**
+         * Whether health check endpoint is enabled. Defaults to true.
+         */
+        private boolean healthCheckEnabled = true;
+
+        /**
+         * The threshold percentage of errors that triggers health status degradation.
+         * A value of 10 means that if 10% or more of validation requests fail, the health status is DOWN.
+         * Defaults to 10.
+         */
+        private int errorThreshold = 10;
+    }
 }
