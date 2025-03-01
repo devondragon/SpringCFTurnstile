@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug Spring Test (Gradle Paths)",
+            "request": "launch",
+            "mainClass": "${file}",
+            "projectName": "SpringCFTurnstile",
+            "classPaths": [
+                "${workspaceFolder}/build/classes/java/main",
+                "${workspaceFolder}/build/classes/java/test",
+                "${workspaceFolder}/build/resources/main",
+                "${workspaceFolder}/build/resources/test"
+            ],
+            "vmArgs": [
+                "-ea",
+                "-Dspring.profiles.active=test"
+            ]
+        }
+    ]
+}

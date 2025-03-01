@@ -3,3 +3,8 @@ ds:
     turnstile:
       sitekey: 1x00000000000000000000BB
       secret: 1x0000000000000000000000000000000AA
+      cache:
+        enabled: true
+        ttlSeconds: 60
+        maxSize: 100
+        cacheSuccessOnly: true

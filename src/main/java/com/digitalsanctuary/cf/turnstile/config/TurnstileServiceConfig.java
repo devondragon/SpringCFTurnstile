@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TurnstileServiceConfig {
 
     private final TurnstileConfigProperties properties;
+    private final TurnstileCacheProperties cacheProperties;
 
     /**
      * Creates a RestTemplate bean for Turnstile API interactions.
@@ -40,7 +41,7 @@ public class TurnstileServiceConfig {
      */
     @Bean
     public TurnstileValidationService turnstileValidationService() {
-        return new TurnstileValidationService(turnstileRestClient(), properties);
+        return new TurnstileValidationService(turnstileRestClient(), properties, cacheProperties);
     }
 
     /**

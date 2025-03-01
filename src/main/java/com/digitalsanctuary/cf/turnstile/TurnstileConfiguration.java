@@ -3,8 +3,12 @@ package com.digitalsanctuary.cf.turnstile;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import com.digitalsanctuary.cf.turnstile.config.TurnstileCacheConfig;
+import com.digitalsanctuary.cf.turnstile.config.TurnstileCacheProperties;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileServiceConfig;
+
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +30,11 @@ import lombok.extern.slf4j.Slf4j;
  *       sitekey: your-turnstile-site-key
  *       secret: your-turnstile-secret-key
  *       url: https://challenges.cloudflare.com/turnstile/v0/siteverify
+ *       cache:
+ *         enabled: true
+ *         ttlSeconds: 300
+ *         maxSize: 1000
+ *         cacheSuccessOnly: true
  * </pre>
  * <p>
  * The {@link #onStartup()} method is annotated with {@link jakarta.annotation.PostConstruct} and is executed 
@@ -34,12 +43,19 @@ import lombok.extern.slf4j.Slf4j;
  * 
  * @see com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties
  * @see com.digitalsanctuary.cf.turnstile.config.TurnstileServiceConfig
+ * @see com.digitalsanctuary.cf.turnstile.config.TurnstileCacheProperties
+ * @see com.digitalsanctuary.cf.turnstile.config.TurnstileCacheConfig
  * @see com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService
  */
 @Slf4j
 @Configuration
 @AutoConfiguration
-@Import({TurnstileServiceConfig.class, TurnstileConfigProperties.class})
+@Import({
+    TurnstileServiceConfig.class, 
+    TurnstileConfigProperties.class,
+    TurnstileCacheProperties.class,
+    TurnstileCacheConfig.class
+})
 public class TurnstileConfiguration {
 
     /**
