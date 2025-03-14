@@ -138,16 +138,16 @@ public class LoginController {
 
     @Autowired
     private TurnstileValidationService turnstileValidationService;
-    
+
     @Autowired
     private UserService userService;
-    
+
     @PostMapping("/login")
-    public String login(Model model, 
+    public String login(Model model,
                       @RequestParam String email,
                       @RequestParam(name = "cf-turnstile-response", required = true) String turnstileResponse,
                       HttpServletRequest request) {
-                      
+
         // Get the client IP address (recommended for security)
         String clientIpAddress = turnstileValidationService.getClientIpAddress(request);
 
@@ -265,6 +265,55 @@ Spring Cloudflare Turnstile uses Spring Boot's auto-configuration to seamlessly 
 6. **Health Indicators**: Health checks to verify Cloudflare connectivity and service status.
 
 7. **DTO Layer**: Response objects map directly to Cloudflare's API responses.
+
+## Optional: Configuring Turnstile Captcha Filter with Spring Security
+
+This project provides an optional helper component, **TurnstileCaptchaFilter**, which can be used to add Turnstile captcha validation to your Spring Security Form Lgin flow.
+
+### Configuration
+
+Configure the following properties in your `application.properties` or `application.yml`:
+
+```properties
+ds.cf.turnstile.login.submissionPath=/login
+ds.cf.turnstile.login.redirectUrl=/login?error=captcha
+ds.cf.turnstile.token.parameterName=cf-turnstile-response
+```
+
+### Integration with Spring Security
+
+To use the filter with form login, add it to your security configuration before the default authentication filter:
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                             TurnstileCaptchaFilter turnstileCaptchaFilter) throws Exception {
+        http
+            // Add the Turnstile captcha filter before the default authentication filter
+            .addFilterBefore(turnstileCaptchaFilter, UsernamePasswordAuthenticationFilter.class)
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/home")
+                .failureUrl("/login?error") // You might handle errors differently
+            )
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest().authenticated()
+            );
+        return http.build();
+    }
+}
+```
+
+### Notes
+
+- The filter checks if the request's servlet path matches the configured login submission path and that the HTTP method is POST.
+- It validates the captcha token (expected to be sent under the configured parameter name) using the TurnstileValidationService.
+- On a successful captcha validation, the request continues through the filter chain. Otherwise, it logs a warning and redirects to the login page.
+- This component is completely optional; if you do not require captcha validation for your login flow, do not enable or configure this filter.
 
 ## Contributing
 

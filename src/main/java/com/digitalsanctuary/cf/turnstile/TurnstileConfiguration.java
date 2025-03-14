@@ -10,7 +10,7 @@ import com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileHealthIndicator;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileMetricsConfig;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileServiceConfig;
-
+import com.digitalsanctuary.cf.turnstile.filter.TurnstileCaptchaFilter;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -18,15 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Main auto-configuration class for the Spring Cloudflare Turnstile integration.
  * <p>
- * This class serves as the entry point for Spring Boot's auto-configuration mechanism to
- * automatically set up Cloudflare Turnstile integration when the library is included in a project.
- * It imports the necessary configuration components such as property management, service configuration,
- * and metrics/monitoring configuration.
+ * This class serves as the entry point for Spring Boot's auto-configuration mechanism to automatically set up Cloudflare Turnstile integration when
+ * the library is included in a project. It imports the necessary configuration components such as property management, service configuration, and
+ * metrics/monitoring configuration.
  * </p>
  * <p>
- * To use this auto-configuration, include this library in your Spring Boot project and configure
- * the required properties in your application.yml or application.properties file:
+ * To use this auto-configuration, include this library in your Spring Boot project and configure the required properties in your application.yml or
+ * application.properties file:
  * </p>
+ * 
  * <pre>
  * ds:
  *   cf:
@@ -40,10 +40,10 @@ import lombok.extern.slf4j.Slf4j;
  *         error-threshold: 10
  * </pre>
  * <p>
- * The {@link #onStartup()} method is annotated with {@link jakarta.annotation.PostConstruct} and is executed 
- * after the bean initialization to log a confirmation message that the Cloudflare Turnstile Service has been loaded.
+ * The {@link #onStartup()} method is annotated with {@link jakarta.annotation.PostConstruct} and is executed after the bean initialization to log a
+ * confirmation message that the Cloudflare Turnstile Service has been loaded.
  * </p>
- * 
+ *
  * @see com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties
  * @see com.digitalsanctuary.cf.turnstile.config.TurnstileServiceConfig
  * @see com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService
@@ -53,15 +53,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @AutoConfiguration
-@Import({
-    TurnstileServiceConfig.class, 
-    TurnstileConfigProperties.class
-})
+@Import({TurnstileServiceConfig.class, TurnstileConfigProperties.class, TurnstileCaptchaFilter.class})
 public class TurnstileConfiguration {
 
     /**
-     * Metrics configuration for Turnstile.
-     * Only imported if MeterRegistry is available on the classpath.
+     * Metrics configuration for Turnstile. Only imported if MeterRegistry is available on the classpath.
      */
     @Configuration
     @ConditionalOnClass(MeterRegistry.class)
@@ -70,8 +66,7 @@ public class TurnstileConfiguration {
     }
 
     /**
-     * Health indicator configuration for Turnstile.
-     * Only imported if Spring Actuator health is enabled.
+     * Health indicator configuration for Turnstile. Only imported if Spring Actuator health is enabled.
      */
     @Configuration
     @ConditionalOnEnabledHealthIndicator("turnstile")
