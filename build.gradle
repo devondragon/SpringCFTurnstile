@@ -155,7 +155,7 @@ publishing {
 
 checkstyle {
     toolVersion = '10.14.2'
-    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    configFile = rootProject.file("config/checkstyle/checkstyle.xml")
     configProperties = [
         'baseDir': rootDir
     ]
@@ -165,7 +165,7 @@ checkstyle {
 pmd {
     toolVersion = '6.55.0'
     consoleOutput = true
-    ruleSetFiles = files("${rootDir}/config/pmd/ruleset.xml")
+    ruleSetFiles = files(rootProject.file("config/pmd/ruleset.xml"))
     ruleSets = []
     ignoreFailures = true
 }
