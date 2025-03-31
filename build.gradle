@@ -6,6 +6,9 @@ plugins {
     id 'signing'
     id 'com.vanniktech.maven.publish' version '0.31.0'
     id 'net.researchgate.release' version '3.1.0'
+    id 'checkstyle'
+    id 'pmd'
+    id 'jacoco'
 }
 
 import com.vanniktech.maven.publish.SonatypeHost
@@ -145,6 +148,48 @@ publishing {
             }
         }
         // more repositories can go here
+    }
+}
+
+// Code Quality Configurations
+
+checkstyle {
+    toolVersion = '10.14.2'
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    configProperties = [
+        'baseDir': rootDir
+    ]
+    ignoreFailures = true
+}
+
+pmd {
+    toolVersion = '6.55.0'
+    consoleOutput = true
+    ruleSetFiles = files("${rootDir}/config/pmd/ruleset.xml")
+    ruleSets = []
+    ignoreFailures = true
+}
+
+jacoco {
+    toolVersion = '0.8.11'
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    dependsOn test
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = false
+            limit {
+                minimum = 0.48
+            }
+        }
     }
 }
 
