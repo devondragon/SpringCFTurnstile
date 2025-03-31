@@ -128,5 +128,9 @@ gradle-app.setting
 /config/*
 !/config/README.md
 !/config/*.example
+!/config/checkstyle/
+!/config/checkstyle/checkstyle.xml
+!/config/pmd/
+!/config/pmd/ruleset.xml
 
 application-local.yml
