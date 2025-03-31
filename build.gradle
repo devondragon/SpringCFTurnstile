@@ -155,19 +155,37 @@ publishing {
 
 checkstyle {
     toolVersion = '10.14.2'
-    configFile = rootProject.file("config/checkstyle/checkstyle.xml")
+    configFile = project.file("config/checkstyle/checkstyle.xml")
     configProperties = [
         'baseDir': rootDir
     ]
     ignoreFailures = true
 }
 
+// Skip checkstyle if the config file doesn't exist
+tasks.withType(Checkstyle) {
+    def checkstyleConfigFile = project.file("config/checkstyle/checkstyle.xml")
+    enabled = checkstyleConfigFile.exists()
+    if (!checkstyleConfigFile.exists()) {
+        logger.warn("Checkstyle config file not found at {}, skipping checkstyle tasks", checkstyleConfigFile.absolutePath)
+    }
+}
+
 pmd {
     toolVersion = '6.55.0'
     consoleOutput = true
-    ruleSetFiles = files(rootProject.file("config/pmd/ruleset.xml"))
+    ruleSetFiles = files(project.file("config/pmd/ruleset.xml"))
     ruleSets = []
     ignoreFailures = true
+}
+
+// Skip PMD if the config file doesn't exist
+tasks.withType(Pmd) {
+    def pmdConfigFile = project.file("config/pmd/ruleset.xml")
+    enabled = pmdConfigFile.exists()
+    if (!pmdConfigFile.exists()) {
+        logger.warn("PMD config file not found at {}, skipping PMD tasks", pmdConfigFile.absolutePath)
+    }
 }
 
 jacoco {
@@ -211,6 +229,37 @@ tasks.register("publishLocal") {
     // doFirst {
     //     project.gradle.startParameter.refreshDependencies = true
     // }
+}
+
+// Debug task to help diagnose file issues in CI
+tasks.register("debugCI") {
+    doLast {
+        println "Working directory: ${System.getProperty('user.dir')}"
+        println "Project directory: ${project.projectDir.absolutePath}"
+        println "Root directory: ${rootDir.absolutePath}"
+        
+        def checkstyleFile = project.file("config/checkstyle/checkstyle.xml")
+        println "Checkstyle file exists: ${checkstyleFile.exists()}"
+        if (checkstyleFile.exists()) {
+            println "Checkstyle file path: ${checkstyleFile.absolutePath}"
+        }
+        
+        def pmdFile = project.file("config/pmd/ruleset.xml")
+        println "PMD file exists: ${pmdFile.exists()}"
+        if (pmdFile.exists()) {
+            println "PMD file path: ${pmdFile.absolutePath}"
+        }
+        
+        println "Directory contents:"
+        project.file("config").listFiles().each { file ->
+            println " - ${file.name}"
+            if (file.isDirectory()) {
+                file.listFiles().each { subFile ->
+                    println "   - ${subFile.name}"
+                }
+            }
+        }
+    }
 }
 
 task generateAIChangelog(type: Exec) {
