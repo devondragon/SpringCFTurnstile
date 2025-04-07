@@ -21,7 +21,7 @@ description = 'SpringBoot Cloudflare Turnstile Library'
 
 ext {
     springBootVersion = '3.4.4'
-    lombokVersion = '1.18.36'
+    lombokVersion = '1.18.38'
 }
 
 java {
