@@ -15,9 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Configuration for Turnstile metrics and monitoring.
  * <p>
- * This class configures the metrics for Cloudflare Turnstile service. It sets up common
- * tags and filters for all metrics related to the Turnstile service. The metrics are only
- * configured if micrometer-core is on the classpath and metrics are enabled in the configuration.
+ * This class configures the metrics for Cloudflare Turnstile service. It sets up common tags and filters for all metrics related to the Turnstile
+ * service. The metrics are only configured if micrometer-core is on the classpath and metrics are enabled in the configuration.
  * </p>
  */
 @Slf4j
@@ -29,8 +28,7 @@ public class TurnstileMetricsConfig {
     /**
      * Customizes the meter registry for Turnstile metrics.
      * <p>
-     * Adds a common tag 'component:turnstile' to all Turnstile-related metrics
-     * and configures a prefix for all Turnstile metrics.
+     * Adds a common tag 'component:turnstile' to all Turnstile-related metrics and configures a prefix for all Turnstile metrics.
      * </p>
      *
      * @return a MeterRegistryCustomizer to customize the MeterRegistry
@@ -40,8 +38,7 @@ public class TurnstileMetricsConfig {
         log.info("Configuring Turnstile metrics");
         return registry -> {
             // Add a common tag to all turnstile metrics
-            registry.config()
-                    .meterFilter(MeterFilter.acceptNameStartsWith("turnstile"))
+            registry.config().meterFilter(MeterFilter.acceptNameStartsWith("turnstile"))
                     .meterFilter(MeterFilter.commonTags(Collections.singletonList(Tag.of("component", "turnstile"))));
         };
     }

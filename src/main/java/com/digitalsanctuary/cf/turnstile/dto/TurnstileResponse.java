@@ -7,13 +7,13 @@ import lombok.Data;
 /**
  * Data Transfer Object (DTO) representing the response from Cloudflare's Turnstile API.
  * <p>
- * This class maps to the JSON response returned by Cloudflare's Turnstile verification endpoint.
- * It contains information about whether the verification was successful, when the challenge was 
- * completed, what hostname it was completed on, and any error codes if the verification failed.
+ * This class maps to the JSON response returned by Cloudflare's Turnstile verification endpoint. It contains information about whether the
+ * verification was successful, when the challenge was completed, what hostname it was completed on, and any error codes if the verification failed.
  * </p>
  * <p>
  * Example successful JSON response:
  * </p>
+ * 
  * <pre>
  * {
  *   "success": true,
@@ -25,13 +25,14 @@ import lombok.Data;
  * <p>
  * Example failed JSON response:
  * </p>
+ * 
  * <pre>
  * {
  *   "success": false,
  *   "error-codes": ["invalid-input-response", "timeout-or-duplicate"]
  * }
  * </pre>
- * 
+ *
  * @see <a href="https://developers.cloudflare.com/turnstile/get-started/server-side-validation/">Cloudflare Turnstile Server-Side Validation</a>
  */
 @Data
@@ -58,4 +59,3 @@ public class TurnstileResponse {
     @JsonProperty("error-codes")
     private List<String> errorCodes;
 }
-

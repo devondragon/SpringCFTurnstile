@@ -13,9 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Health indicator for the Cloudflare Turnstile service.
  * <p>
- * This component provides health check information for the Cloudflare Turnstile service.
- * It checks if the service is properly configured and if the service has not exceeded
- * the configured error threshold. The health indicator can be disabled through configuration.
+ * This component provides health check information for the Cloudflare Turnstile service. It checks if the service is properly configured and if the
+ * service has not exceeded the configured error threshold. The health indicator can be disabled through configuration.
  * </p>
  */
 @Slf4j
@@ -43,19 +42,15 @@ public class TurnstileHealthIndicator implements HealthIndicator {
             double errorRate = validationService.getErrorRate();
             int errorThreshold = properties.getMetrics().getErrorThreshold();
 
-            Health.Builder builder = Health.up()
-                    .withDetail("url", properties.getUrl())
-                    .withDetail("validationCount", validationService.getValidationCount())
-                    .withDetail("successCount", validationService.getSuccessCount())
-                    .withDetail("errorCount", validationService.getErrorCount())
-                    .withDetail("errorRate", String.format("%.2f%%", errorRate))
-                    .withDetail("responseTimeAvg", String.format("%.2fms", validationService.getAverageResponseTime()));
+            Health.Builder builder =
+                    Health.up().withDetail("url", properties.getUrl()).withDetail("validationCount", validationService.getValidationCount())
+                            .withDetail("successCount", validationService.getSuccessCount())
+                            .withDetail("errorCount", validationService.getErrorCount()).withDetail("errorRate", String.format("%.2f%%", errorRate))
+                            .withDetail("responseTimeAvg", String.format("%.2fms", validationService.getAverageResponseTime()));
 
             // If error rate exceeds threshold, report as DOWN
             if (errorRate > errorThreshold) {
-                return builder.down()
-                        .withDetail("reason", "Error rate exceeded threshold: " + errorRate + "% > " + errorThreshold + "%")
-                        .build();
+                return builder.down().withDetail("reason", "Error rate exceeded threshold: " + errorRate + "% > " + errorThreshold + "%").build();
             }
 
             return builder.build();

@@ -22,24 +22,39 @@ import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService;
 import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Unit tests for the TurnstileCaptchaFilter.
+ * <p>
+ * This class tests the behavior of the TurnstileCaptchaFilter, including valid and invalid captcha responses, and non-login paths.
+ * </p>
+ */
 @Slf4j
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("test")
 public class TurnstileCaptchaFilterTest {
 
-    // Use @MockitoBean to replace the real service with a mock in the Spring context
+    /**
+     * Mocked TurnstileValidationService for testing.
+     */
     @MockitoBean
     private TurnstileValidationService validationService;
 
-    // Autowire the filter from the Spring context
+    /**
+     * This filter is responsible for validating Turnstile captcha responses in HTTP requests.
+     */
     @Autowired
     private TurnstileCaptchaFilter captchaFilter;
 
+    /**
+     * Default constructor for TurnstileCaptchaFilterTest.
+     * <p>
+     * This constructor is used to initialize the test class.
+     * </p>
+     */
     @Test
     public void testValidCaptcha() throws ServletException, IOException {
         // Use specific parameters instead of any() matchers
         String expectedToken = "valid-token";
-        String expectedIp = null; // or the actual IP if your filter uses one
 
         // Make your mock more specific
         when(validationService.validateTurnstileResponse(eq(expectedToken), any())).thenReturn(true);
@@ -63,6 +78,13 @@ public class TurnstileCaptchaFilterTest {
         assertNull(response.getRedirectedUrl(), "Should not redirect with valid token");
     }
 
+    /**
+     * Tests the behavior of the TurnstileCaptchaFilter when an invalid captcha response is provided.
+     * <p>
+     * This test simulates a scenario where the captcha validation fails, and checks that the filter redirects to the login page with an error
+     * parameter.
+     * </p>
+     */
     @Test
     public void testInvalidCaptcha() throws ServletException, IOException {
         // given an invalid token returns false from the validation service
@@ -80,6 +102,12 @@ public class TurnstileCaptchaFilterTest {
         assertEquals("/login?error=captcha", response.getRedirectedUrl());
     }
 
+    /**
+     * Tests the behavior of the TurnstileCaptchaFilter when the servlet path does not match the login submission path.
+     * <p>
+     * This test ensures that the filter allows requests to proceed without redirection when they do not match the expected login path.
+     * </p>
+     */
     @Test
     public void testNonLoginPath() throws ServletException, IOException {
         // when the servlet path does not match login submission path, filter should pass through
