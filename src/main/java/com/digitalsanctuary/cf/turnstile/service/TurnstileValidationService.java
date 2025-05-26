@@ -514,4 +514,3 @@ public class TurnstileValidationService {
         return request.getRemoteAddr();
     }
 }
-

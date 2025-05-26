@@ -52,6 +52,9 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
@@ -154,7 +157,7 @@ publishing {
 // Code Quality Configurations
 
 checkstyle {
-    toolVersion = '10.14.2'
+   //  toolVersion = '10.14.2'
     configFile = project.file("config/checkstyle/checkstyle.xml")
     configProperties = [
         'baseDir': rootDir
@@ -172,7 +175,7 @@ tasks.withType(Checkstyle) {
 }
 
 pmd {
-    toolVersion = '6.55.0'
+    // toolVersion = '6.55.0'
     consoleOutput = true
     ruleSetFiles = files(project.file("config/pmd/ruleset.xml"))
     ruleSets = []
@@ -189,7 +192,7 @@ tasks.withType(Pmd) {
 }
 
 jacoco {
-    toolVersion = '0.8.11'
+    // toolVersion = '0.8.11'
 }
 
 jacocoTestReport {
@@ -237,19 +240,19 @@ tasks.register("debugCI") {
         println "Working directory: ${System.getProperty('user.dir')}"
         println "Project directory: ${project.projectDir.absolutePath}"
         println "Root directory: ${rootDir.absolutePath}"
-        
+
         def checkstyleFile = project.file("config/checkstyle/checkstyle.xml")
         println "Checkstyle file exists: ${checkstyleFile.exists()}"
         if (checkstyleFile.exists()) {
             println "Checkstyle file path: ${checkstyleFile.absolutePath}"
         }
-        
+
         def pmdFile = project.file("config/pmd/ruleset.xml")
         println "PMD file exists: ${pmdFile.exists()}"
         if (pmdFile.exists()) {
             println "PMD file path: ${pmdFile.absolutePath}"
         }
-        
+
         println "Directory contents:"
         project.file("config").listFiles().each { file ->
             println " - ${file.name}"
