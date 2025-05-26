@@ -1,5 +1,9 @@
 # Spring Cloudflare Turnstile Service
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.digitalsanctuary/ds-spring-cf-turnstile.svg)](https://central.sonatype.com/artifact/com.digitalsanctuary/ds-spring-cf-turnstile)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Java Version](https://img.shields.io/badge/Java-17%2B-brightgreen)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+
 ## Overview
 
 Cloudflare's Turnstile Service is a captcha-like bot detection and mitigation service that helps protect your website from malicious traffic. This library provides a Spring Boot service that integrates with Cloudflare's Turnstile Service to protect your website from bots. It provides a simple and easy-to-use interface for configuring and using the Turnstile Service in your Spring Boot application.
