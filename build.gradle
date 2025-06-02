@@ -47,14 +47,15 @@ dependencies {
     // Lombok dependencies for test classes
     testCompileOnly "org.projectlombok:lombok:$lombokVersion"
     testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    testAnnotationProcessor "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
 
     // Testing dependencies
     testImplementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testImplementation "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
-
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
 }
 
 test {
@@ -99,6 +100,7 @@ tasks.register('testAll') {
 
 // Ensure the default 'test' task triggers both test tasks
 tasks.test {
+    useJUnitPlatform()
     dependsOn(tasks.named('testAll'))
 }
 
