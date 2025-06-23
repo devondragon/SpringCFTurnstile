@@ -1,3 +1,35 @@
+## [1.1.9] - 2025-06-23
+## Changelog
+
+### Features
+- **Enhance testing configuration**: Added annotation processor ``org.springframework.boot:spring-boot-configuration-processor`` for improved processing of Spring Boot configurations during tests. Additionally, ensured the `useJUnitPlatform()` configuration for better JUnit 5 support and updated test dependencies to enhance testing capabilities. [Commit 7789dbee]
+
+- **CI/CD and code quality tools**: Implemented GitHub Actions workflows to support automated builds, testing, and quality checks. These include workflows for building and testing on multiple Java versions (Java 17 and 21), dependency review for security vulnerabilities, and CodeQL for security analysis. Integrated code quality tools using Gradle plugins: Checkstyle for code style enforcement, PMD for detecting code issues, and JaCoCo for code coverage analysis. [Commit 8115c34d]
+
+- **Create `codeql.yml`**: Added a new GitHub Actions workflow to perform CodeQL analysis on pushes, pull requests, and weekly schedules, strengthening the project's security posture. [Commit ea13cfd0]
+
+### Fixes
+- **Turnstile service enhancement**: Improved Turnstile service by implementing new test cases, updating the PMD and Checkstyle configurations, and refactoring validation service tests for improved clarity. Included JUnit 5 dependencies to enhance the testing framework and updated Gradle wrapper to version 8.14.1 for improvements in build system robustness. [Commit b089d625]
+
+### Breaking Changes
+- None identified in the provided information.
+
+### Refactoring
+- None explicitly identified, but substantial test refactoring and service enhancements were addressed as part of the Turnstile service improvement.
+
+### Documentation
+- **Version Update in README**: Updated README.md to reflect the new version 1.1.8 of the `ds-spring-cf-turnstile` library to ensure users refer to the latest library version. Added Maven Central, License, and Java Version badges for better informational display. [Commits 8b36ae21, 048cd847]
+
+### Testing
+- **Enhanced Test Configurations**: Added Lombok annotation processor specifically for test compilation to facilitate comprehensive test generation and execution. Implemented the `useJUnitPlatform()` setting to utilize JUnit 5 effectively within the testing suite. [Commit 7789dbee]
+
+### Other Changes
+- **Dependency Upgrades**: Executed multiple dependency upgrades for improved compatibility and newer features, including upgrading `org.junit.jupiter:junit-jupiter` from 5.12.2 to 5.13.1, and `com.vanniktech.maven.publish` from 0.31.0 to 0.33.0. Spring Boot version was incrementally updated through versions 3.4.3 to 3.5.3 for enhanced security and features. [Commits 29bd16ab, 778c68b7, 0d5ae342, 0b12e213]
+
+- **Gradle Wrapper Upgrades**: Gradle wrapper versions were updated through several updates from 8.12.1 to 8.14.1 for enhanced features and performance in builds. [Commits 3d337b0e, 3deb5006, b089d625]
+
+This changelog captures the essence of substantial changes, improvements, and critical updates to the overall project infrastructure, dependencies, testing, and code quality tools. The focus remains on explaining the pivotal changes in user-centric terms and highlighting updates that directly impact end-users and developers interacting with the repository.
+
 ## [1.1.8] - 2025-03-13
 # Changelog
 
