@@ -11,7 +11,6 @@ plugins {
     id 'jacoco'
 }
 
-import com.vanniktech.maven.publish.SonatypeHost
 import com.vanniktech.maven.publish.JavaLibrary
 import com.vanniktech.maven.publish.JavadocJar
 
@@ -107,7 +106,7 @@ tasks.test {
 // Maven Central Publishing Tasks
 mavenPublishing {
   configure(new JavaLibrary(new JavadocJar.Javadoc(), true))
-  publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+  // publishToMavenCentral is now configured via gradle.properties
   signAllPublications()
   coordinates("com.digitalsanctuary", "ds-spring-cf-turnstile", project.version)
 
