@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew build)",
+      "Bash(./gradlew test)",
+      "Bash(./gradlew:*)",
+      "Bash(gh issue assign:*)",
+      "Bash(gh issue close:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh:*)",
+      "Bash(git add:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git fetch:*)",
+      "Bash(git log:*)",
+      "Bash(git push:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(git restore:*)"
+    ],
+    "deny": []
+  }
+}

@@ -505,9 +505,14 @@ public class TurnstileValidationService {
         if (request instanceof HttpServletRequest httpRequest) {
             String[] headers = {"X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"};
             for (String header : headers) {
-                String ip = httpRequest.getHeader(header);
-                if (ip != null && !ip.isEmpty() && !UNKNOWN.equalsIgnoreCase(ip)) {
-                    return ip;
+                String ipHeaderValue = httpRequest.getHeader(header);
+                if (ipHeaderValue == null || ipHeaderValue.isBlank()) {
+                    continue;
+                }
+
+                String candidate = ipHeaderValue.split(",", 2)[0].trim();
+                if (!candidate.isEmpty() && !UNKNOWN.equalsIgnoreCase(candidate)) {
+                    return candidate;
                 }
             }
         }
