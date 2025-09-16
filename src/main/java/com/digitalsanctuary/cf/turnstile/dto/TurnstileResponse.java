@@ -46,6 +46,7 @@ public class TurnstileResponse {
     /**
      * Timestamp of the challenge.
      */
+    @JsonProperty("challenge_ts")
     private String challengeTs;
 
     /**
