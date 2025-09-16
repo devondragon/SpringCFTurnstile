@@ -1,3 +1,38 @@
+## [1.2.0] - 2025-09-16
+### Changelog
+
+#### Features
+- **Enhanced Turnstile Service Configuration and Validation** (Commit: 91743a8e)
+  - **TurnstileServiceConfig:** Added support for `MeterRegistry` to allow better integration with metrics tracking systems.
+  - **TurnstileValidationService:** Improved IP address extraction by utilizing a more extensive and robust header check.
+  - **TurnstileResponse:** Introduced `@JsonProperty("challenge_ts")` for direct JSON mapping of challenge timestamps.
+  - **turnstile.properties:** Updated comments for clearer configuration of `sitekey` and `secret`, advising environment customization.
+
+#### Fixes
+- **Turnstile Service Configuration and Dependency Updates** (Commit: 886d12bf)
+  - Removed unnecessary `RestTemplate` setup from `TurnstileServiceConfig`.
+  - Enhanced logging in `TurnstileValidationService` to confirm secret configuration status.
+  - Updated `README.md` to reflect new dependency versions, ensuring up-to-date integration instructions.
+  - Refined IP validation, cleaning remote IP assignments, ensuring null or empty strings are managed correctly.
+  - Adjusted code and style rules to maintain code quality consistency.
+
+#### Breaking Changes
+- **Compatibility with Vanniktech Maven Publish Plugin 0.34.0** (Commit: 1aaefea4)
+  - Deprecated usage of `SonatypeHost` removed in favor of configuration via `gradle.properties`.
+  - **gradle.properties:** Introduced `mavenCentralPublishing` and `mavenCentralAutomaticPublishing` properties to align with new plugin expectations.
+
+#### Documentation
+- **AI Agent Setup and Project Guidelines** (Commit: ad46b8ad)
+  - Added `.claude/settings.local.json` to manage AI agent permissions and actions within the repository.
+  - Created `AGENTS.md` with detailed guidance on project structure, coding standards, testing practices, and repository guidelines to support contributors.
+
+#### Other Changes
+- **Dependency Updates:**
+  - Automated updates of `org.junit.jupiter:junit-jupiter` from versions 5.13.1 to 5.13.4, ensuring developers have access to the latest JUnit features and fixes (Commits: fabff8fe, 63709833, 4bb4ba1f).
+  - Upgraded `org.projectlombok:lombok` to 1.18.40 for potential improvements in Lombok's annotation processing (Commit: 4742a9e1).
+
+This changelog captures significant improvements to Turnstile service validation, introduces necessary configuration updates for the Maven publish plugin compatibility, adds helpful documentation for repository maintenance and usage, all while keeping dependencies current and addressing minor bug fixes.
+
 ## [1.1.9] - 2025-06-23
 ## Changelog
 
