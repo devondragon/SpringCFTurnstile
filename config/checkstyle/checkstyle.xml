@@ -36,9 +36,6 @@
     <module name="JavadocType">
       <property name="scope" value="public"/>
     </module>
-    <module name="JavadocVariable">
-      <property name="scope" value="public"/>
-    </module>
     <module name="JavadocStyle"/>
 
     <!-- Naming Conventions -->

@@ -43,7 +43,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>com.digitalsanctuary</groupId>
     <artifactId>ds-spring-cf-turnstile</artifactId>
-    <version>1.1.8</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -53,7 +53,7 @@ Add the following dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.digitalsanctuary:ds-spring-cf-turnstile:1.1.8'
+    implementation 'com.digitalsanctuary:ds-spring-cf-turnstile:1.2.0'
 }
 ```
 

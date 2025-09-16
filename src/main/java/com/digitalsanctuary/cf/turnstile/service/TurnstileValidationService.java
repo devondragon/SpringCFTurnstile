@@ -138,6 +138,7 @@ public class TurnstileValidationService {
         log.info("TurnstileValidationService started");
         log.info("Turnstile URL: {}", properties.getUrl());
         log.info("Turnstile Sitekey: {}", properties.getSitekey());
+        log.info("Turnstile Secret: {}", properties.getSecret() != null && !properties.getSecret().isBlank() ? "[CONFIGURED]" : "[NOT CONFIGURED]");
         log.info("Turnstile Metrics enabled: {}", properties.getMetrics().isEnabled());
         log.info("Turnstile Health Check enabled: {}", properties.getMetrics().isHealthCheckEnabled());
 
@@ -237,9 +238,10 @@ public class TurnstileValidationService {
         }
 
         // Validate remoteIp if provided
-        if (remoteIp != null && (remoteIp.isEmpty() || remoteIp.isBlank())) {
+        String cleanRemoteIp = remoteIp;
+        if (cleanRemoteIp != null && (cleanRemoteIp.isEmpty() || cleanRemoteIp.isBlank())) {
             log.warn("Turnstile validation: ignoring empty or blank remoteIp");
-            remoteIp = null;
+            cleanRemoteIp = null;
         }
 
         // Validate that we have the required configuration
@@ -261,7 +263,7 @@ public class TurnstileValidationService {
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("secret", properties.getSecret());
         requestBody.put("response", token);
-        Optional.ofNullable(remoteIp).ifPresent(ip -> requestBody.put("remoteip", ip));
+        Optional.ofNullable(cleanRemoteIp).ifPresent(ip -> requestBody.put("remoteip", ip));
 
         log.trace("Making request to Cloudflare Turnstile API at: {}", properties.getUrl());
 

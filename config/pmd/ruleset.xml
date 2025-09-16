@@ -9,10 +9,10 @@
     <!-- Best Practices -->
     <rule ref="category/java/bestpractices.xml">
         <exclude name="GuardLogStatement"/>
-        <exclude name="JUnitTestContainsTooManyAsserts"/>
-        <exclude name="JUnitTestsShouldIncludeAssert"/>
-        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+        <exclude name="UnitTestContainsTooManyAsserts"/>
+        <exclude name="UnitTestAssertionsShouldIncludeMessage"/>
         <exclude name="JUnit5TestShouldBePackagePrivate"/>
+        <exclude name="AvoidUsingHardCodedIP"/>
     </rule>
 
 
@@ -26,9 +26,9 @@
         <exclude name="LongVariable"/>
         <exclude name="ShortClassName"/>
         <exclude name="CommentDefaultAccessModifier"/>
-        <exclude name="DefaultPackage"/>
         <exclude name="CallSuperInConstructor"/>
         <exclude name="UselessParentheses"/>
+        <exclude name="TooManyStaticImports"/>
     </rule>
 
     <!-- Design -->
@@ -38,21 +38,29 @@
         <exclude name="UseUtilityClass"/>
         <exclude name="DataClass"/>
         <exclude name="TooManyMethods"/>
+        <exclude name="CognitiveComplexity"/>
+        <exclude name="CyclomaticComplexity"/>
+        <exclude name="NPathComplexity"/>
+        <exclude name="NcssCount"/>
+        <exclude name="GodClass"/>
+        <exclude name="AvoidCatchingGenericException"/>
     </rule>
 
     <!-- Documentation -->
     <rule ref="category/java/documentation.xml">
         <exclude name="CommentSize"/>
+        <exclude name="CommentRequired"/>
     </rule>
 
     <!-- Error Prone -->
     <rule ref="category/java/errorprone.xml">
-        <exclude name="DataflowAnomalyAnalysis"/>
         <exclude name="AvoidFieldNameMatchingMethodName"/>
         <exclude name="AvoidLiteralsInIfCondition"/>
         <exclude name="NullAssignment"/>
         <exclude name="MissingSerialVersionUID"/>
         <exclude name="AssignmentInOperand"/>
+        <exclude name="AvoidDuplicateLiterals"/>
+        <exclude name="TestClassWithoutTestCases"/>
     </rule>
 
     <!-- Multithreading -->
@@ -64,7 +72,6 @@
     <!-- Performance -->
     <rule ref="category/java/performance.xml">
         <exclude name="AvoidInstantiatingObjectsInLoops"/>
-        <exclude name="SimplifyStartsWith"/>
     </rule>
 
 

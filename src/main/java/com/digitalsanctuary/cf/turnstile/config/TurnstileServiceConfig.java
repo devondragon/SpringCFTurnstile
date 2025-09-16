@@ -3,13 +3,11 @@ package com.digitalsanctuary.cf.turnstile.config;
 import java.util.Optional;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestTemplate;
 import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
@@ -26,17 +24,6 @@ public class TurnstileServiceConfig {
 
     private final TurnstileConfigProperties properties;
     private final ObjectProvider<MeterRegistry> meterRegistryProvider;
-
-    /**
-     * Creates a RestTemplate bean for Turnstile API interactions.
-     *
-     * @param builder the RestTemplateBuilder used to build the RestTemplate
-     * @return a configured RestTemplate instance
-     */
-    @Bean
-    public RestTemplate turnstileRestTemplate(RestTemplateBuilder builder) {
-        return builder.build();
-    }
 
     /**
      * Creates a TurnstileValidationService bean.

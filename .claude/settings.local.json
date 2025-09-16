@@ -21,7 +21,13 @@
       "Bash(git push:*)",
       "Bash(ls:*)",
       "Bash(find:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(gradle clean:*)",
+      "Bash(gradle build:*)",
+      "Bash(gradle checkstyle:*)",
+      "mcp__zen__codereview",
+      "Bash(xargs ls:*)",
+      "Bash(gradle:*)"
     ],
     "deny": []
   }
