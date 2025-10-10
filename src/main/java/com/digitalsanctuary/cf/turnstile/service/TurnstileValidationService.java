@@ -40,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class TurnstileValidationService {
     private static final String UNKNOWN = "unknown";
+    private static final int MIN_TOKEN_LENGTH = 20;
 
     private final RestClient turnstileRestClient;
     private final TurnstileConfigProperties properties;
@@ -231,7 +232,7 @@ public class TurnstileValidationService {
 
         // Basic format validation - Cloudflare tokens typically start with '0.' or '1.' followed by alphanumeric chars
         // and should be reasonably sized (typically 100+ chars)
-        if (token.length() < 20) {
+        if (token.length() < MIN_TOKEN_LENGTH) {
             log.warn("Turnstile validation failed: token appears to be too short to be valid (length: {})", token.length());
             recordError(ValidationResultType.INPUT_ERROR);
             return ValidationResult.inputError("Token is too short to be valid (length: " + token.length() + ")");
