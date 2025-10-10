@@ -57,6 +57,16 @@ public class TurnstileConfigProperties {
     private String url;
 
     /**
+     * Connection timeout in seconds. Defaults to 5 seconds.
+     */
+    private int connectTimeout = 5;
+
+    /**
+     * Read timeout in seconds. Defaults to 10 seconds.
+     */
+    private int readTimeout = 10;
+
+    /**
      * Configuration for metrics and monitoring.
      */
     private Metrics metrics = new Metrics();
