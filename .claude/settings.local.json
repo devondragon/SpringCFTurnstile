@@ -27,7 +27,8 @@
       "Bash(gradle checkstyle:*)",
       "mcp__zen__codereview",
       "Bash(xargs ls:*)",
-      "Bash(gradle:*)"
+      "Bash(gradle:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }
