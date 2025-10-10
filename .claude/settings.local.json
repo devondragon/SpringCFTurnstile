@@ -28,7 +28,9 @@
       "mcp__zen__codereview",
       "Bash(xargs ls:*)",
       "Bash(gradle:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "WebSearch",
+      "WebFetch(domain:plugins.gradle.org)"
     ],
     "deny": []
   }
