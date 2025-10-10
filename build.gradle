@@ -237,25 +237,30 @@ tasks.register("publishLocal") {
 
 // Debug task to help diagnose file issues in CI
 tasks.register("debugCI") {
+    // Capture values at configuration time to be compatible with configuration cache
+    def projectDir = project.projectDir.absolutePath
+    def rootDirectory = rootDir.absolutePath
+    def checkstyleFile = project.file("config/checkstyle/checkstyle.xml")
+    def pmdFile = project.file("config/pmd/ruleset.xml")
+    def configDir = project.file("config")
+
     doLast {
         println "Working directory: ${System.getProperty('user.dir')}"
-        println "Project directory: ${project.projectDir.absolutePath}"
-        println "Root directory: ${rootDir.absolutePath}"
+        println "Project directory: ${projectDir}"
+        println "Root directory: ${rootDirectory}"
 
-        def checkstyleFile = project.file("config/checkstyle/checkstyle.xml")
         println "Checkstyle file exists: ${checkstyleFile.exists()}"
         if (checkstyleFile.exists()) {
             println "Checkstyle file path: ${checkstyleFile.absolutePath}"
         }
 
-        def pmdFile = project.file("config/pmd/ruleset.xml")
         println "PMD file exists: ${pmdFile.exists()}"
         if (pmdFile.exists()) {
             println "PMD file path: ${pmdFile.absolutePath}"
         }
 
         println "Directory contents:"
-        project.file("config").listFiles().each { file ->
+        configDir.listFiles().each { file ->
             println " - ${file.name}"
             if (file.isDirectory()) {
                 file.listFiles().each { subFile ->
