@@ -272,7 +272,7 @@ Spring Cloudflare Turnstile uses Spring Boot's auto-configuration to seamlessly 
 
 ## Optional: Configuring Turnstile Captcha Filter with Spring Security
 
-This project provides an optional helper component, **TurnstileCaptchaFilter**, which can be used to add Turnstile captcha validation to your Spring Security Form Lgin flow.
+This project provides an optional helper component, **TurnstileCaptchaFilter**, which can be used to add Turnstile captcha validation to your Spring Security Form Login flow.
 
 ### Configuration
 
