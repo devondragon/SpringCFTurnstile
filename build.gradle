@@ -14,12 +14,12 @@ plugins {
 import com.vanniktech.maven.publish.JavaLibrary
 import com.vanniktech.maven.publish.JavadocJar
 
-group 'com.digitalsanctuary.cf.turnstile'
+group = 'com.digitalsanctuary.cf.turnstile'
 // version '1.1.6-SNAPSHOT'
 description = 'SpringBoot Cloudflare Turnstile Library'
 
 ext {
-    springBootVersion = '3.5.7'
+    springBootVersion = '4.0.1'
     lombokVersion = '1.18.42'
 }
 
