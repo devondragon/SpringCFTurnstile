@@ -14,7 +14,7 @@ plugins {
 import com.vanniktech.maven.publish.JavaLibrary
 import com.vanniktech.maven.publish.JavadocJar
 
-group 'com.digitalsanctuary.cf.turnstile'
+group = 'com.digitalsanctuary.cf.turnstile'
 // version '1.1.6-SNAPSHOT'
 description = 'SpringBoot Cloudflare Turnstile Library'
 

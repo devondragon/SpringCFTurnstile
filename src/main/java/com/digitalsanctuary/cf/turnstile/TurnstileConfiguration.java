@@ -1,6 +1,6 @@
 package com.digitalsanctuary.cf.turnstile;
 
-import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
+import org.springframework.boot.health.autoconfigure.contributor.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
@@ -70,7 +70,7 @@ public class TurnstileConfiguration {
      */
     @Configuration
     @ConditionalOnEnabledHealthIndicator("turnstile")
-    @ConditionalOnClass(name = "org.springframework.boot.actuate.health.HealthIndicator")
+    @ConditionalOnClass(name = "org.springframework.boot.health.contributor.HealthIndicator")
     @Import(TurnstileHealthIndicator.class)
     static class TurnstileHealthConfiguration {
     }
