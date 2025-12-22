@@ -3,17 +3,30 @@
         {
             "name": "ds.cf.turnstile.url",
             "type": "java.lang.String",
-            "description": "Cloudflare Turnstile API Endpoint URL'"
+            "description": "Cloudflare Turnstile API endpoint URL",
+            "defaultValue": "https://challenges.cloudflare.com/turnstile/v0/siteverify"
         },
         {
             "name": "ds.cf.turnstile.secret",
             "type": "java.lang.String",
-            "description": "Your Cloudflare Turnstile API Secret"
+            "description": "Your Cloudflare Turnstile API Secret (required)"
         },
         {
             "name": "ds.cf.turnstile.sitekey",
             "type": "java.lang.String",
-            "description": "Your Cloudflare Turnstile Site Key"
+            "description": "Your Cloudflare Turnstile Site Key (required)"
+        },
+        {
+            "name": "ds.cf.turnstile.connect-timeout",
+            "type": "java.lang.Integer",
+            "description": "Connection timeout in seconds for Turnstile API calls",
+            "defaultValue": 5
+        },
+        {
+            "name": "ds.cf.turnstile.read-timeout",
+            "type": "java.lang.Integer",
+            "description": "Read timeout in seconds for Turnstile API calls",
+            "defaultValue": 10
         },
         {
             "name": "ds.cf.turnstile.metrics.enabled",
@@ -32,6 +45,24 @@
             "type": "java.lang.Integer",
             "description": "Threshold for error rate percentage that triggers health status degradation",
             "defaultValue": 10
+        },
+        {
+            "name": "ds.cf.turnstile.login.submission-path",
+            "type": "java.lang.String",
+            "description": "Path to intercept for login submissions when using TurnstileCaptchaFilter",
+            "defaultValue": "/login"
+        },
+        {
+            "name": "ds.cf.turnstile.login.redirect-url",
+            "type": "java.lang.String",
+            "description": "URL to redirect to when captcha validation fails",
+            "defaultValue": "/login?error=captcha"
+        },
+        {
+            "name": "ds.cf.turnstile.token.parameter-name",
+            "type": "java.lang.String",
+            "description": "Name of the request parameter containing the Turnstile token",
+            "defaultValue": "cf-turnstile-response"
         }
     ]
 }

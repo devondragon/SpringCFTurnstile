@@ -71,11 +71,20 @@ ds:
     turnstile:
       sitekey: # Turnstile Site Key
       secret: # Turnstile Secret
+      url: https://challenges.cloudflare.com/turnstile/v0/siteverify  # API endpoint (optional, this is the default)
+      connect-timeout: 5   # Connection timeout in seconds (optional, default: 5)
+      read-timeout: 10     # Read timeout in seconds (optional, default: 10)
       # Optional monitoring configuration
       metrics:
         enabled: true
         health-check-enabled: true
         error-threshold: 10
+      # Optional filter configuration (only needed if using TurnstileCaptchaFilter)
+      login:
+        submissionPath: /login           # Path to intercept (default: /login)
+        redirectUrl: /login?error=captcha # Redirect URL on failure
+      token:
+        parameterName: cf-turnstile-response  # Token parameter name (default)
 ```
 
 
@@ -128,23 +137,21 @@ Here's a complete example:
 
 ```java
 import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class LoginController {
 
-    @Autowired
-    private TurnstileValidationService turnstileValidationService;
-
-    @Autowired
-    private UserService userService;
+    private final TurnstileValidationService turnstileValidationService;
+    private final UserService userService;
 
     @PostMapping("/login")
     public String login(Model model,
