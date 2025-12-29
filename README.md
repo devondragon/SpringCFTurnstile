@@ -31,6 +31,15 @@ You will need a Cloudflare Account, and to create a Turnstile Widget for your si
 - Gradle 8.10.1 or Maven 3.8.1+
 - Cloudflare Turnstile Site Key and Secret
 
+### Version Compatibility
+
+Choose the library version based on your Spring Boot version:
+
+| Library Version | Spring Boot | Status |
+|----------------|-------------|--------|
+| 2.0.x          | 4.0.x       | Current |
+| 1.3.x          | 3.5.x       | Maintenance |
+
 ### Quick Start
 
 The library is available through the Maven Central Repository. You can include it in your Spring Boot project using either Maven or Gradle.
@@ -43,7 +52,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>com.digitalsanctuary</groupId>
     <artifactId>ds-spring-cf-turnstile</artifactId>
-    <version>1.2.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -53,7 +62,7 @@ Add the following dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.digitalsanctuary:ds-spring-cf-turnstile:1.2.0'
+    implementation 'com.digitalsanctuary:ds-spring-cf-turnstile:2.0.0'
 }
 ```
 
