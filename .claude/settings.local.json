@@ -30,7 +30,14 @@
       "Bash(gradle:*)",
       "Bash(git commit:*)",
       "WebSearch",
-      "WebFetch(domain:plugins.gradle.org)"
+      "WebFetch(domain:plugins.gradle.org)",
+      "WebFetch(domain:github.com)",
+      "Bash(git pull:*)",
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "Bash(git -C /Users/devon/git/SpringCFTurnstile log --oneline -15)",
+      "Bash(git tag:*)",
+      "mcp__pal__codereview"
     ],
     "deny": []
   }
