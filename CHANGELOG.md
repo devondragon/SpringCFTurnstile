@@ -1,4 +1,49 @@
 ## [2.0.0] - 2025-12-29
+# Changelog
+
+## Features
+
+### Spring Boot 4.0.x Compatibility and 2.0.0 Release Preparations
+- The project has been updated for compatibility with Spring Boot 4.0.x, marking the release of version 2.0.0.
+- Introduced a version compatibility matrix to the README to clearly document which library version to use based on Spring Boot version. Library version 2.0.x is for Spring Boot 4.0.x, considered the current version.
+- Updated annotations for JUnit Jupiter to support version 6.0.x, as well as upgrades for Mockito with the introduction of the `@MockitoBean` annotation.
+- Version numbers in the README for dependency examples were updated to reflect the new 2.0.0 release.
+- Updated `gradle.properties` to version `2.0.0-SNAPSHOT`, preparing for the official 2.0.0 release.
+
+## Fixes
+
+### Improved Documentation of Configuration Properties
+- Documentation improvement in the README to include all configuration properties for the Turnstile API, such as `url`, `connect-timeout`, `read-timeout`, and filter properties like `login.submissionPath`, `login.redirectUrl`, and `token.parameterName`. This ensures better guidance for users setting up the library.
+- Changed the Java code example in the README from field injection to constructor injection using `@RequiredArgsConstructor`, following best practices and promoting better code maintainability.
+
+## Breaking Changes
+
+### Spring Boot 4.0.x Actuator Modularization
+- As part of the Spring Boot 4.0 upgrade, several important API endpoints and packages have been reorganized due to modularization efforts:
+  - `ConditionalOnEnabledHealthIndicator` moved to `org.springframework.boot.health.autoconfigure.contributor`.
+  - `MeterRegistryCustomizer` moved to `org.springframework.boot.micrometer.metrics.autoconfigure`.
+  - `Health` and `HealthIndicator` moved to `org.springframework.boot.health.contributor`.
+- Developers need to update their import statements to these new package paths.
+
+## Documentation
+
+### Comprehensive Update for 2.0.0 Release
+- Added a comprehensive entry for the 2.0.0 release in the `CHANGELOG.md`, and a badge for Spring Boot 4.0.x in the README header.
+- Added a version compatibility table for clarity regarding which library version corresponds with which Spring Boot version, reducing confusion for developers.
+
+## Other Changes
+
+### Dependency Bumps
+- Updated `org.junit.jupiter:junit-jupiter` from 6.0.0 to 6.0.1 for improved test stability and features.
+- Upgraded the Spring Boot dependency from version 3.5.7 to 4.0.1, marking this a major release improvement.
+- Updated `com.vanniktech.maven.publish` plugin from 0.34.0 to 0.35.0, ensuring better publication processes and alignment with the latest tooling features.
+
+### Development Tools and Configuration:
+- Updated Claude configuration in `.claude/settings.local.json` to include additional Bash scripts and fetch capabilities, enabling enhanced integration and operations for the development environment.
+
+These changes illustrate a major upgrade and compatibility overhaul, focusing on long-term maintainability, documentation clarity, and support for modern Spring Boot environments. Developers should thoroughly review the breaking changes, especially around Spring Boot's modularization, to align their projects with these updates.
+
+## [2.0.0] - 2025-12-29
 ### Changelog
 
 #### Breaking Changes
