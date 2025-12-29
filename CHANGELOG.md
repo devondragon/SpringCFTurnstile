@@ -1,3 +1,31 @@
+## [2.0.0] - 2025-12-29
+### Changelog
+
+#### Breaking Changes
+- **Spring Boot 4.0.x Upgrade**
+  - This release requires Spring Boot 4.0.0 or later
+  - Users on Spring Boot 3.5.x should use version 1.3.x (maintenance branch: `spring-boot-3.x`)
+
+#### Features
+- **Spring Boot 4.0 Compatibility**
+  - Updated actuator health indicator imports to `org.springframework.boot.health.contributor` package
+  - Full compatibility with Jackson 3.x (core annotations remain backward compatible)
+  - JUnit Jupiter 6.0.x test framework support
+  - Updated to `@MockitoBean` annotation (replacing deprecated `@MockBean`)
+
+#### Documentation
+- **Version Compatibility Matrix**
+  - Added clear version compatibility table to README
+  - Documents which library version to use based on Spring Boot version
+  - Updated dependency examples to version 2.0.0
+
+#### Other Changes
+- **Maintenance Branch Created**
+  - Created `spring-boot-3.x` branch for Spring Boot 3.5.x users
+  - Tagged v1.3.0 as the final Spring Boot 3.5.x release
+
+---
+
 ## [1.2.0] - 2025-09-16
 ### Changelog
 

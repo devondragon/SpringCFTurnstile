@@ -3,6 +3,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.digitalsanctuary/ds-spring-cf-turnstile.svg)](https://central.sonatype.com/artifact/com.digitalsanctuary/ds-spring-cf-turnstile)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Java Version](https://img.shields.io/badge/Java-17%2B-brightgreen)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.x-6DB33F)](https://spring.io/projects/spring-boot)
 
 ## Overview
 
