@@ -255,54 +255,121 @@ public class TurnstileValidationService {
             case CONFIGURATION_ERROR -> configErrorCount.increment();
             case INVALID_TOKEN -> validationErrorCount.increment();
             case INPUT_ERROR -> inputErrorCount.increment();
-            default -> {}
+            default -> { }
         }
     }
 
-    /** @return total number of validation attempts */
-    public long getValidationCount() { return validationCount.sum(); }
+    /**
+     * Gets the total number of validation attempts.
+     *
+     * @return total number of validation attempts
+     */
+    public long getValidationCount() {
+        return validationCount.sum();
+    }
 
-    /** @return number of successful validations */
-    public long getSuccessCount() { return successCount.sum(); }
+    /**
+     * Gets the number of successful validations.
+     *
+     * @return number of successful validations
+     */
+    public long getSuccessCount() {
+        return successCount.sum();
+    }
 
-    /** @return number of failed validations */
-    public long getErrorCount() { return errorCount.sum(); }
+    /**
+     * Gets the number of failed validations.
+     *
+     * @return number of failed validations
+     */
+    public long getErrorCount() {
+        return errorCount.sum();
+    }
 
-    /** @return number of network errors */
-    public long getNetworkErrorCount() { return networkErrorCount.sum(); }
+    /**
+     * Gets the number of network errors.
+     *
+     * @return number of network errors
+     */
+    public long getNetworkErrorCount() {
+        return networkErrorCount.sum();
+    }
 
-    /** @return number of configuration errors */
-    public long getConfigErrorCount() { return configErrorCount.sum(); }
+    /**
+     * Gets the number of configuration errors.
+     *
+     * @return number of configuration errors
+     */
+    public long getConfigErrorCount() {
+        return configErrorCount.sum();
+    }
 
-    /** @return number of validation errors (invalid tokens) */
-    public long getValidationErrorCount() { return validationErrorCount.sum(); }
+    /**
+     * Gets the number of validation errors (invalid tokens).
+     *
+     * @return number of validation errors
+     */
+    public long getValidationErrorCount() {
+        return validationErrorCount.sum();
+    }
 
-    /** @return number of input validation errors */
-    public long getInputErrorCount() { return inputErrorCount.sum(); }
+    /**
+     * Gets the number of input validation errors.
+     *
+     * @return number of input validation errors
+     */
+    public long getInputErrorCount() {
+        return inputErrorCount.sum();
+    }
 
-    /** @return time of last response in milliseconds */
-    public long getLastResponseTime() { return lastResponseTime.get(); }
+    /**
+     * Gets the time of the last response in milliseconds.
+     *
+     * @return time of last response in milliseconds
+     */
+    public long getLastResponseTime() {
+        return lastResponseTime.get();
+    }
 
-    /** @return average response time in milliseconds, or 0 if no responses yet */
+    /**
+     * Gets the average response time in milliseconds.
+     *
+     * @return average response time in milliseconds, or 0 if no responses yet
+     */
     public double getAverageResponseTime() {
         long count = responseCount.get();
         return count > 0 ? (double) totalResponseTime.get() / count : 0;
     }
 
-    /** @return error rate as a percentage (0-100), or 0 if no attempts yet */
+    /**
+     * Gets the error rate as a percentage of total validation attempts.
+     *
+     * @return error rate as a percentage (0-100), or 0 if no attempts yet
+     */
     public double getErrorRate() {
         long total = validationCount.sum();
         return total > 0 ? (double) errorCount.sum() * 100 / total : 0;
     }
 
     /**
-     * @deprecated Use {@link #getTurnstileSitekey()} instead.
+     * Gets the Turnstile Sitekey.
+     *
+     * @return the Turnstile Sitekey.
+     * @deprecated Use {@link #getTurnstileSitekey()} instead. Will be removed in a future version.
      */
     @Deprecated
-    public String getTurnsiteSitekey() { return getTurnstileSitekey(); }
+    public String getTurnsiteSitekey() {
+        return getTurnstileSitekey();
+    }
 
-    /** @return the Turnstile Sitekey */
-    public String getTurnstileSitekey() { return properties.getSitekey(); }
+    /**
+     * Gets the Turnstile Sitekey.
+     *
+     * @return the Turnstile Sitekey
+     */
+    public String getTurnstileSitekey() {
+        return properties.getSitekey();
+    }
 
     /**
      * Gets the client IP address from the ServletRequest.

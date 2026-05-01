@@ -61,7 +61,7 @@ public class MicrometerTurnstileMetrics implements TurnstileMetrics {
             case CONFIGURATION_ERROR -> configErrorCounter.increment();
             case INVALID_TOKEN -> validationErrorCounter.increment();
             case INPUT_ERROR -> inputErrorCounter.increment();
-            default -> {}
+            default -> { }
         }
     }
 

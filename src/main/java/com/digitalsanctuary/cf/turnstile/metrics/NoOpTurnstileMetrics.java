@@ -8,14 +8,18 @@ import com.digitalsanctuary.cf.turnstile.dto.ValidationResult.ValidationResultTy
 public class NoOpTurnstileMetrics implements TurnstileMetrics {
 
     @Override
-    public void recordValidation() {}
+    public void recordValidation() { // no-op
+    }
 
     @Override
-    public void recordSuccess() {}
+    public void recordSuccess() { // no-op
+    }
 
     @Override
-    public void recordError(ValidationResultType type) {}
+    public void recordError(ValidationResultType type) { // no-op
+    }
 
     @Override
-    public void recordResponseTime(long milliseconds) {}
+    public void recordResponseTime(long milliseconds) { // no-op
+    }
 }
