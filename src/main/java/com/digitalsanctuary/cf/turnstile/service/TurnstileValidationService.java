@@ -195,13 +195,7 @@ public class TurnstileValidationService {
         log.trace("Making request to Cloudflare Turnstile API at: {}", properties.getUrl());
 
         try {
-            ValidationResult result = executeValidationRequest(requestBody);
-            long elapsed = System.currentTimeMillis() - startTime;
-            lastResponseTime.set(elapsed);
-            totalResponseTime.addAndGet(elapsed);
-            responseCount.incrementAndGet();
-            metrics.recordResponseTime(elapsed);
-            return result;
+            return executeValidationRequest(requestBody);
         } catch (HttpClientErrorException e) {
             log.error("Client error during Turnstile validation: {}", e.getMessage(), e);
             recordError(ValidationResultType.NETWORK_ERROR);
@@ -221,6 +215,12 @@ public class TurnstileValidationService {
             log.error("Unexpected error during Turnstile validation: {}", e.getMessage(), e);
             recordError(ValidationResultType.NETWORK_ERROR);
             throw new TurnstileNetworkException("Unexpected error: " + e.getMessage(), e);
+        } finally {
+            long elapsed = System.currentTimeMillis() - startTime;
+            lastResponseTime.set(elapsed);
+            totalResponseTime.addAndGet(elapsed);
+            responseCount.incrementAndGet();
+            metrics.recordResponseTime(elapsed);
         }
     }
 
