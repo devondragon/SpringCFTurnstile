@@ -4,12 +4,24 @@ import com.digitalsanctuary.cf.turnstile.dto.ValidationResult.ValidationResultTy
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Micrometer-backed implementation of TurnstileMetrics.
- * This class is only instantiated when Micrometer is present on the classpath.
+ * Micrometer-backed implementation of {@link TurnstileMetrics}.
+ * <p>
+ * This class is only instantiated when Micrometer is present on the classpath, via
+ * {@code TurnstileMetricsConfig} which is guarded by {@code @ConditionalOnClass(MeterRegistry.class)}.
+ * </p>
+ * <p>
+ * All eight meters ({@code errorCounter} is the aggregate; the four type-specific counters are
+ * sub-categories whose sum equals the aggregate) are eagerly registered at construction time so
+ * they appear in monitoring dashboards before the first validation event occurs. A single instance
+ * should be registered per application context to avoid duplicate meter registration errors.
+ * </p>
+ *
+ * @see NoOpTurnstileMetrics
  */
 @Slf4j
 public class MicrometerTurnstileMetrics implements TurnstileMetrics {
@@ -23,7 +35,24 @@ public class MicrometerTurnstileMetrics implements TurnstileMetrics {
     private final Counter inputErrorCounter;
     private final Timer responseTimer;
 
+    /**
+     * Creates a {@code MicrometerTurnstileMetrics} instance and eagerly registers all Turnstile
+     * meters with the provided registry. The registered meters are:
+     * <ul>
+     *   <li>{@code turnstile.validation.requests} — total attempts</li>
+     *   <li>{@code turnstile.validation.success} — successful validations</li>
+     *   <li>{@code turnstile.validation.errors} — all errors (aggregate)</li>
+     *   <li>{@code turnstile.validation.errors.network} — network errors</li>
+     *   <li>{@code turnstile.validation.errors.config} — configuration errors</li>
+     *   <li>{@code turnstile.validation.errors.token} — invalid token errors</li>
+     *   <li>{@code turnstile.validation.errors.input} — input validation errors</li>
+     *   <li>{@code turnstile.validation.response.time} — response time timer</li>
+     * </ul>
+     *
+     * @param registry the Micrometer {@link MeterRegistry} to register meters with; must not be null
+     */
     public MicrometerTurnstileMetrics(MeterRegistry registry) {
+        Objects.requireNonNull(registry, "registry must not be null");
         log.info("Initializing Turnstile metrics with MeterRegistry");
         validationCounter = Counter.builder("turnstile.validation.requests")
                 .description("Total number of Turnstile validation requests").register(registry);

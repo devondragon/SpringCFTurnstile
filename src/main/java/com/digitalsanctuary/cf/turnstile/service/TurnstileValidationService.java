@@ -29,8 +29,8 @@ import lombok.extern.slf4j.Slf4j;
  * Service for validating responses from Cloudflare's Turnstile API.
  * <p>
  * This service provides methods to validate Turnstile tokens with the Cloudflare API, handling various error scenarios with appropriate exceptions
- * and detailed validation results. It also collects metrics on validation attempts, success/failure rates, and response times when metrics are
- * enabled.
+ * and detailed validation results. It maintains internal counters for validation attempts, success/failure rates, and response times, and delegates
+ * to a {@link com.digitalsanctuary.cf.turnstile.metrics.TurnstileMetrics} implementation (Micrometer-backed or no-op) for external metric recording.
  * </p>
  */
 @Slf4j
@@ -207,10 +207,11 @@ public class TurnstileValidationService {
             recordError(ValidationResultType.NETWORK_ERROR);
             throw new TurnstileNetworkException("Network error: " + e.getMessage(), e);
         } catch (TurnstileValidationException e) {
+            log.debug("Turnstile token rejected by Cloudflare: {}", e.getMessage());
             recordError(ValidationResultType.INVALID_TOKEN);
             throw e;
         } catch (Exception e) {
-            log.error("Unexpected error during Turnstile validation: {}", e.getMessage(), e);
+            log.error("Unexpected {} during Turnstile validation: {}", e.getClass().getSimpleName(), e.getMessage(), e);
             recordError(ValidationResultType.NETWORK_ERROR);
             throw new TurnstileNetworkException("Unexpected error: " + e.getMessage(), e);
         } finally {
@@ -218,7 +219,11 @@ public class TurnstileValidationService {
             lastResponseTime.set(elapsed);
             totalResponseTime.addAndGet(elapsed);
             responseCount.incrementAndGet();
-            metrics.recordResponseTime(elapsed);
+            try {
+                metrics.recordResponseTime(elapsed);
+            } catch (Exception metricsEx) {
+                log.warn("Failed to record response time metric; validation result is unaffected: {}", metricsEx.getMessage(), metricsEx);
+            }
         }
     }
 
@@ -241,7 +246,6 @@ public class TurnstileValidationService {
             return ValidationResult.success();
         } else {
             log.warn("Turnstile validation failed with error codes: {}", response.getErrorCodes());
-            recordError(ValidationResultType.INVALID_TOKEN);
             throw new TurnstileValidationException("Token validation failed", response.getErrorCodes());
         }
     }

@@ -47,7 +47,9 @@ public class TurnstileConfiguration {
 
     /**
      * Health indicator configuration for Turnstile.
-     * Only imported if Spring Actuator's HealthIndicator is available on the classpath.
+     * Only imported if Spring Actuator's {@code HealthIndicator} class is on the classpath
+     * and the turnstile health indicator has not been disabled via
+     * {@code management.health.turnstile.enabled=false}.
      */
     @Configuration
     @ConditionalOnEnabledHealthIndicator("turnstile")

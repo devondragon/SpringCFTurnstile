@@ -27,8 +27,10 @@ public class TurnstileServiceConfig {
     private final TurnstileConfigProperties properties;
 
     /**
-     * Provides a no-op TurnstileMetrics bean when no other implementation is registered.
-     * This is the fallback when Micrometer is not on the classpath.
+     * Provides a no-op {@link TurnstileMetrics} bean when no other implementation is registered.
+     * This fallback is active when Micrometer is absent from the classpath, when metrics are
+     * disabled via {@code ds.cf.turnstile.metrics.enabled=false}, or when no custom
+     * {@code TurnstileMetrics} bean has been supplied by the consuming application.
      *
      * @return a no-op TurnstileMetrics instance
      */
