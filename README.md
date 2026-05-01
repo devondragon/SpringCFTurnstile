@@ -53,7 +53,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>com.digitalsanctuary</groupId>
     <artifactId>ds-spring-cf-turnstile</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 
@@ -63,7 +63,7 @@ Add the following dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.digitalsanctuary:ds-spring-cf-turnstile:2.0.0'
+    implementation 'com.digitalsanctuary:ds-spring-cf-turnstile:2.0.1'
 }
 ```
 
@@ -263,7 +263,9 @@ ds:
 
 The metrics can be integrated with monitoring systems such as Prometheus, Grafana, and others through standard Spring Boot Actuator endpoints.
 
-To enable full monitoring capabilities, include Spring Boot Actuator in your project:
+Spring Boot Actuator and Micrometer are **optional**. The library works without them — internal counters (validation count, error rate, response time) are always active regardless. Micrometer metrics and the health check endpoint are only registered when Actuator is on the classpath.
+
+To enable full Micrometer metrics and the health endpoint, include Spring Boot Actuator:
 
 ```groovy
 implementation 'org.springframework.boot:spring-boot-starter-actuator'
