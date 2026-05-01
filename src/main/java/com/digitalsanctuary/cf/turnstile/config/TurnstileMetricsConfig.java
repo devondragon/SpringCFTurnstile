@@ -1,6 +1,7 @@
 package com.digitalsanctuary.cf.turnstile.config;
 
 import org.springframework.boot.micrometer.metrics.autoconfigure.MeterRegistryCustomizer;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,6 +32,7 @@ public class TurnstileMetricsConfig {
      * @return a MicrometerTurnstileMetrics instance
      */
     @Bean
+    @ConditionalOnBean(MeterRegistry.class)
     @ConditionalOnMissingBean(TurnstileMetrics.class)
     public TurnstileMetrics micrometerTurnstileMetrics(MeterRegistry registry) {
         return new MicrometerTurnstileMetrics(registry);

@@ -37,7 +37,7 @@ public class TurnstileServiceConfig {
     @Bean
     @ConditionalOnMissingBean(TurnstileMetrics.class)
     public TurnstileMetrics noOpTurnstileMetrics() {
-        log.info("Micrometer not available — using no-op Turnstile metrics");
+        log.info("No TurnstileMetrics bean available — using no-op Turnstile metrics");
         return new NoOpTurnstileMetrics();
     }
 

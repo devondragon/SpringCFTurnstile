@@ -38,15 +38,17 @@ class TurnstileMetricsWiringTest {
     private TurnstileMetrics turnstileMetrics;
 
     /**
-     * Verifies that a TurnstileMetrics bean is available when metrics auto-configs are excluded.
-     * Because Micrometer is still on the test classpath, MicrometerTurnstileMetrics remains active.
+     * Verifies that the NoOp fallback is active when MetricsAutoConfiguration is excluded.
+     * Even though Micrometer is on the classpath, no MeterRegistry bean is registered when
+     * MetricsAutoConfiguration is excluded, so @ConditionalOnBean(MeterRegistry.class) fails
+     * and the NoOpTurnstileMetrics fallback is used instead.
      */
     @Test
-    void metricsAvailableWhenMicrometerAutoConfigExcluded() {
+    void noOpMetricsActiveWhenMicrometerAutoConfigExcluded() {
         assertNotNull(turnstileMetrics,
             "A TurnstileMetrics bean should be available even with Micrometer auto-config excluded");
-        assertFalse(turnstileMetrics instanceof NoOpTurnstileMetrics,
-            "MicrometerTurnstileMetrics should be active when Micrometer is on the classpath");
+        assertTrue(turnstileMetrics instanceof NoOpTurnstileMetrics,
+            "NoOpTurnstileMetrics should be active when no MeterRegistry bean is available");
     }
 
     /**
