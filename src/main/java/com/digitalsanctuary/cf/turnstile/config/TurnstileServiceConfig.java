@@ -2,17 +2,12 @@ package com.digitalsanctuary.cf.turnstile.config;
 
 import java.net.http.HttpClient;
 import java.time.Duration;
-import java.util.Optional;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
-import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService;
-import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,19 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 public class TurnstileServiceConfig {
 
     private final TurnstileConfigProperties properties;
-    private final ObjectProvider<MeterRegistry> meterRegistryProvider;
-
-    /**
-     * Creates a TurnstileValidationService bean.
-     *
-     * @param restClient the preconfigured REST client for Turnstile calls
-     * @return a configured TurnstileValidationService instance
-     */
-    @Bean
-    public TurnstileValidationService turnstileValidationService(@Qualifier("turnstileRestClient") RestClient restClient) {
-        Optional<MeterRegistry> optionalRegistry = Optional.ofNullable(meterRegistryProvider.getIfAvailable());
-        return new TurnstileValidationService(restClient, properties, optionalRegistry);
-    }
 
     /**
      * Creates a RestClient bean for Turnstile API interactions.
