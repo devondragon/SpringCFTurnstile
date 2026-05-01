@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.LongAdder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -35,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
  * </p>
  */
 @Slf4j
-@Service
 public class TurnstileValidationService {
     private static final String UNKNOWN = "unknown";
     private static final int MIN_TOKEN_LENGTH = 20;

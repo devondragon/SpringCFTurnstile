@@ -5,7 +5,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import com.digitalsanctuary.cf.turnstile.metrics.MicrometerTurnstileMetrics;
+import com.digitalsanctuary.cf.turnstile.metrics.TurnstileMetrics;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.config.MeterFilter;
@@ -14,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Configuration for Turnstile metrics and monitoring.
- * <p>
- * This class configures the metrics for Cloudflare Turnstile service. It sets up common tags and filters for all metrics related to the Turnstile
- * service. The metrics are only configured if micrometer-core is on the classpath and metrics are enabled in the configuration.
- * </p>
+ * Only loaded when Micrometer is on the classpath and metrics are enabled.
  */
 @Slf4j
 @Configuration
@@ -26,20 +24,26 @@ import lombok.extern.slf4j.Slf4j;
 public class TurnstileMetricsConfig {
 
     /**
-     * Customizes the meter registry for Turnstile metrics.
-     * <p>
-     * Adds a common tag 'component:turnstile' to all Turnstile-related metrics and configures a prefix for all Turnstile metrics.
-     * </p>
+     * Registers the Micrometer-backed TurnstileMetrics bean.
      *
-     * @return a MeterRegistryCustomizer to customize the MeterRegistry
+     * @param registry the MeterRegistry to use for metrics
+     * @return a MicrometerTurnstileMetrics instance
+     */
+    @Bean
+    public TurnstileMetrics micrometerTurnstileMetrics(MeterRegistry registry) {
+        return new MicrometerTurnstileMetrics(registry);
+    }
+
+    /**
+     * Customizes the meter registry with Turnstile-specific tags and filters.
+     *
+     * @return a MeterRegistryCustomizer for the MeterRegistry
      */
     @Bean
     public MeterRegistryCustomizer<MeterRegistry> turnstileMeterRegistryCustomizer() {
         log.info("Configuring Turnstile metrics");
-        return registry -> {
-            // Add a common tag to all turnstile metrics
-            registry.config().meterFilter(MeterFilter.acceptNameStartsWith("turnstile"))
-                    .meterFilter(MeterFilter.commonTags(Collections.singletonList(Tag.of("component", "turnstile"))));
-        };
+        return registry -> registry.config()
+                .meterFilter(MeterFilter.acceptNameStartsWith("turnstile"))
+                .meterFilter(MeterFilter.commonTags(Collections.singletonList(Tag.of("component", "turnstile"))));
     }
 }
