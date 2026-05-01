@@ -1,3 +1,41 @@
+## [2.0.1] - 2026-05-01
+# Changelog
+
+### Features
+- **Workflow Enhancements**: Added two new GitHub Actions workflows for improved code management:
+  - **Claude Code Review Workflow**: Automated code review using Claude, triggered by various pull request events. ([Commit: a0dbe7e4](#), [Commit: 4fd6c6d6](#))
+  - **Claude PR Assistant Workflow**: Provides automated support for pull request management and issue comments tagged with `@claude`. ([Commit: a0dbe7e4](#), [Commit: cf70e2d8](#))
+
+- **Dependency Updates**:
+  - **Lombok**: Updated `org.projectlombok:lombok` from 1.18.42 to 1.18.44 and subsequently to 1.18.46. This update may include minor improvements or bug fixes as captured by the project changelog. ([Commit: 1299aa43](#), [Commit: f60d848a](#))
+  - **JUnit**: Updated `org.junit.jupiter:junit-jupiter` from 6.0.1 progressively to 6.0.2, then to 6.0.3, enhancing test capabilities with the latest patches and features. ([Commit: f9694ea8](#), [Commit: ea331304](#))
+  - **Spring Boot**: Improved application performance and stability by updating `springBootVersion` starting from 4.0.3 to 4.0.6 across several commits. ([Commit: 4f9228ee](#), [Commit: 90c7af0b](#))
+  - **Gradle Wrapper**: Bumped `gradle-wrapper` from 8.14.1 to 9.3.0, later on updated to 9.4.0, supporting latest Gradle build enhancements and fixes. ([Commit: 5eba1876](#), [Commit: a2ff0dfa](#))
+
+- **New Verifications**: Added `context7.json` which seems to act as a verification configuration, likely for service integration or API use. ([Commit: a8db7235](#))
+
+### Fixes
+- **Micrometer Integration Issue**: Resolved `NoClassDefFoundError` related to Micrometer absence by introducing optional Micrometer support. Updates include:
+  - New `TurnstileMetrics` interface and various implementations, ensuring graceful fallback to no-op metrics when Micrometer is not available.
+  - Regression tests to avoid future issues and confirm functionality without Micrometer. ([Commit: 7a390a1c](#))
+
+### Breaking Changes
+- No explicit breaking changes indicated in the provided commit data, indicating backward-compatible updates across versions.
+
+### Refactoring
+- **Turnstile Validation Service Refactoring**: Removed direct Micrometer imports, using the new abstraction interface `TurnstileMetrics` to handle optional metrics recording. The refactoring improved modularity and load-time decisions related to Micrometer presence. ([Commit: 7a390a1c](#))
+
+### Documentation
+- **Optional Micrometer Dependency Fix Plan**: Specific documentation created detailing the fix approach to address issue #94, outlining strategy and steps in `2026-05-01-optional-micrometer-fix.md`. ([Commit: 7a390a1c](#))
+
+### Testing
+- Added comprehensive tests like `MicrometerTurnstileMetricsTest` and `TurnstileMetricsWiringTest` to ensure new metrics integration works as intended and validates the absence paths for environments without Micrometer. ([Commit: 7a390a1c](#))
+
+### Other Changes
+- **Version Management Enhancements**: Via Dependabot, various core library updates including `com.github.ben-manes.versions` and `com.vanniktech.maven.publish` were automated, keeping dependencies up-to-date and reducing manual oversight. ([Commit: be9e9cc2](#), [Commit: 38f4d555](#))
+
+This changelog encapsulates important development updates in a structured format, giving clear insight into key application improvements, operational fixes, and development process enhancements.
+
 ## [2.0.0] - 2025-12-29
 # Changelog
 
