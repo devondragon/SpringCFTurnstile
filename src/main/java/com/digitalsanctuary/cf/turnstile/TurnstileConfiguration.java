@@ -5,43 +5,19 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
 import com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileHealthIndicator;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileMetricsConfig;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileServiceConfig;
 import com.digitalsanctuary.cf.turnstile.filter.TurnstileCaptchaFilter;
-import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Main auto-configuration class for the Spring Cloudflare Turnstile integration.
  * <p>
- * This class serves as the entry point for Spring Boot's auto-configuration mechanism to automatically set up Cloudflare Turnstile integration when
- * the library is included in a project. It imports the necessary configuration components such as property management, service configuration, and
- * metrics/monitoring configuration.
- * </p>
- * <p>
- * To use this auto-configuration, include this library in your Spring Boot project and configure the required properties in your application.yml or
- * application.properties file:
- * </p>
- * 
- * <pre>
- * ds:
- *   cf:
- *     turnstile:
- *       sitekey: your-turnstile-site-key
- *       secret: your-turnstile-secret-key
- *       url: https://challenges.cloudflare.com/turnstile/v0/siteverify
- *       metrics:
- *         enabled: true
- *         health-check-enabled: true
- *         error-threshold: 10
- * </pre>
- * <p>
- * The {@link #onStartup()} method is annotated with {@link jakarta.annotation.PostConstruct} and is executed after the bean initialization to log a
- * confirmation message that the Cloudflare Turnstile Service has been loaded.
+ * Imports core configuration unconditionally; metrics and health configurations are
+ * conditional on the presence of their respective classes on the classpath.
  * </p>
  *
  * @see com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties
@@ -57,16 +33,23 @@ import lombok.extern.slf4j.Slf4j;
 public class TurnstileConfiguration {
 
     /**
-     * Metrics configuration for Turnstile. Only imported if MeterRegistry is available on the classpath.
+     * Metrics configuration for Turnstile.
+     * Only imported if Micrometer's MeterRegistry is available on the classpath.
+     * Uses string form of @ConditionalOnClass to avoid encoding a bytecode reference
+     * to MeterRegistry in this class, which would cause NoClassDefFoundError when
+     * Micrometer is absent.
      */
     @Configuration
-    @ConditionalOnClass(MeterRegistry.class)
+    @ConditionalOnClass(name = "io.micrometer.core.instrument.MeterRegistry")
     @Import(TurnstileMetricsConfig.class)
     static class TurnstileMetricsConfiguration {
     }
 
     /**
-     * Health indicator configuration for Turnstile. Only imported if Spring Actuator health is enabled.
+     * Health indicator configuration for Turnstile.
+     * Only imported if Spring Actuator's {@code HealthIndicator} class is on the classpath
+     * and the turnstile health indicator has not been disabled via
+     * {@code management.health.turnstile.enabled=false}.
      */
     @Configuration
     @ConditionalOnEnabledHealthIndicator("turnstile")
@@ -76,10 +59,7 @@ public class TurnstileConfiguration {
     }
 
     /**
-     * Method executed after the bean initialization.
-     * <p>
-     * This method logs a message indicating that the DigitalSanctuary Cloudflare Turnstile Service has been loaded.
-     * </p>
+     * Logs confirmation that the Turnstile service has been loaded.
      */
     @PostConstruct
     public void onStartup() {
