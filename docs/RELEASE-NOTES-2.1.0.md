@@ -7,6 +7,9 @@
   library was on the classpath, intercepting POSTs to `ds.cf.turnstile.login.submissionPath`
   (default `/login`). **If you use the login filter, add `ds.cf.turnstile.login.enabled=true`
   when upgrading.** If you only use `TurnstileValidationService` directly, no change is needed.
+  Apps that inject `TurnstileCaptchaFilter` directly (e.g. into a `SecurityFilterChain`, per
+  the old README pattern) will fail startup with `NoSuchBeanDefinitionException` until
+  `ds.cf.turnstile.login.enabled=true` is set.
 
 ## New
 
@@ -18,7 +21,11 @@
 ## Fixed
 
 - `turnstileValidationService` and `turnstileRestClient` beans are now `@ConditionalOnMissingBean`,
-  so consumers can supply their own implementations without a bean-definition conflict. (The
-  RestClient condition is name-based: only a bean named `turnstileRestClient` overrides it.)
+  so consumers can supply their own implementations without a bean-definition conflict.
+  `TurnstileValidationService` is a concrete class with no interface, so overriding it means
+  supplying your own instance of that class or a subclass — the library's health indicator and
+  metrics then reflect whichever `TurnstileValidationService` bean is active, library-provided
+  or consumer-supplied. (The RestClient condition is name-based: only a bean named
+  `turnstileRestClient` overrides it.)
 
 (#106)

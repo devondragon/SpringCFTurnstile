@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestClient;
 
 import com.digitalsanctuary.cf.turnstile.TurnstileConfiguration;
 import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService;
@@ -44,6 +45,42 @@ class TurnstileBeanOverrideTest {
             assertThat(context).hasNotFailed();
             assertThat(context).hasSingleBean(TurnstileValidationService.class);
             assertThat(context).hasBean("turnstileValidationService");
+        });
+    }
+
+    @Configuration
+    static class CustomRestClientConfiguration {
+        static final RestClient INSTANCE = RestClient.builder().build();
+
+        @Bean(name = "turnstileRestClient")
+        RestClient turnstileRestClient() {
+            return INSTANCE;
+        }
+    }
+
+    @Test
+    void consumerRestClientBeanNamedTurnstileRestClientReplacesDefault() {
+        contextRunner.withUserConfiguration(CustomRestClientConfiguration.class).run(context -> {
+            assertThat(context).hasNotFailed();
+            assertThat(context.getBean("turnstileRestClient")).isSameAs(CustomRestClientConfiguration.INSTANCE);
+        });
+    }
+
+    @Configuration
+    static class DifferentlyNamedRestClientConfiguration {
+        @Bean
+        RestClient someOtherRestClient() {
+            return RestClient.builder().build();
+        }
+    }
+
+    @Test
+    void consumerRestClientBeanWithDifferentNameDoesNotReplaceDefault() {
+        contextRunner.withUserConfiguration(DifferentlyNamedRestClientConfiguration.class).run(context -> {
+            assertThat(context).hasNotFailed();
+            assertThat(context).hasBean("turnstileRestClient");
+            assertThat(context).hasBean("someOtherRestClient");
+            assertThat(context).hasSingleBean(TurnstileValidationService.class);
         });
     }
 }
