@@ -38,7 +38,7 @@ Choose the library version based on your Spring Boot version:
 
 | Library Version | Spring Boot | Status |
 |----------------|-------------|--------|
-| 2.0.x          | 4.0.x       | Current |
+| 2.1.x          | 4.0.x       | Current |
 | 1.3.x          | 3.5.x       | Maintenance |
 
 ### Quick Start
@@ -53,7 +53,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>com.digitalsanctuary</groupId>
     <artifactId>ds-spring-cf-turnstile</artifactId>
-    <version>2.0.1</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -63,7 +63,7 @@ Add the following dependency to your `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.digitalsanctuary:ds-spring-cf-turnstile:2.0.1'
+    implementation 'com.digitalsanctuary:ds-spring-cf-turnstile:2.1.0'
 }
 ```
 
