@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  * </p>
  */
 @Slf4j
-@SpringBootTest(classes = TestApplication.class)
+@SpringBootTest(classes = TestApplication.class, properties = "ds.cf.turnstile.login.enabled=true")
 @ActiveProfiles("test")
 public class TurnstileCaptchaFilterTest {
 

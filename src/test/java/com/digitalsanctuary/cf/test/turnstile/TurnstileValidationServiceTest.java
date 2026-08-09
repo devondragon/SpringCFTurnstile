@@ -3,13 +3,16 @@ package com.digitalsanctuary.cf.test.turnstile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import com.digitalsanctuary.cf.test.TestApplication;
+import com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties;
 import com.digitalsanctuary.cf.turnstile.dto.ValidationResult;
 import com.digitalsanctuary.cf.turnstile.dto.ValidationResult.ValidationResultType;
+import com.digitalsanctuary.cf.turnstile.metrics.NoOpTurnstileMetrics;
 import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -159,5 +162,67 @@ public class TurnstileValidationServiceTest {
 
         assertTrue(booleanResult);
         assertTrue(detailedResult.isSuccess());
+    }
+
+    /**
+     * Builds a standalone TurnstileValidationService backed by a fresh TurnstileConfigProperties instance with the given sitekey and secret. Used
+     * to test {@code isUsingTestCredentials()} without mutating the shared autowired service/properties.
+     */
+    private TurnstileValidationService buildServiceWithCredentials(String sitekey, String secret) {
+        TurnstileConfigProperties testProperties = new TurnstileConfigProperties();
+        testProperties.setSitekey(sitekey);
+        testProperties.setSecret(secret);
+        return new TurnstileValidationService(null, testProperties, new NoOpTurnstileMetrics());
+    }
+
+    /**
+     * Verifies that every documented Cloudflare test sitekey is detected as a test credential.
+     *
+     * @see <a href="https://developers.cloudflare.com/turnstile/troubleshooting/testing/">Cloudflare Turnstile testing docs</a>
+     */
+    @Test
+    void isUsingTestCredentialsTrueForCloudflareTestSitekeys() {
+        List<String> cloudflareTestSitekeys = List.of("1x00000000000000000000AA", "2x00000000000000000000AB", "1x00000000000000000000BB",
+                "2x00000000000000000000BB", "3x00000000000000000000FF");
+
+        for (String testSitekey : cloudflareTestSitekeys) {
+            TurnstileValidationService service = buildServiceWithCredentials(testSitekey, "0x4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            assertTrue(service.isUsingTestCredentials(), "Expected sitekey '" + testSitekey + "' to be detected as a Cloudflare test credential");
+        }
+    }
+
+    /**
+     * Verifies that every documented Cloudflare test secret is detected as a test credential.
+     *
+     * @see <a href="https://developers.cloudflare.com/turnstile/troubleshooting/testing/">Cloudflare Turnstile testing docs</a>
+     */
+    @Test
+    void isUsingTestCredentialsTrueForCloudflareTestSecrets() {
+        List<String> cloudflareTestSecrets = List.of("1x0000000000000000000000000000000AA", "2x0000000000000000000000000000000AA",
+                "3x0000000000000000000000000000000AA");
+
+        for (String testSecret : cloudflareTestSecrets) {
+            TurnstileValidationService service = buildServiceWithCredentials("0x4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", testSecret);
+            assertTrue(service.isUsingTestCredentials(), "Expected secret '" + testSecret + "' to be detected as a Cloudflare test credential");
+        }
+    }
+
+    /**
+     * Verifies that real-looking (non-test) credentials are not flagged as test credentials.
+     */
+    @Test
+    void isUsingTestCredentialsFalseForRealCredentials() {
+        TurnstileValidationService service =
+                buildServiceWithCredentials("0x4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "0x4BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+        assertFalse(service.isUsingTestCredentials());
+    }
+
+    /**
+     * Verifies that a null (unconfigured) sitekey and secret are not flagged as test credentials.
+     */
+    @Test
+    void isUsingTestCredentialsFalseWhenUnconfigured() {
+        TurnstileValidationService service = buildServiceWithCredentials(null, null);
+        assertFalse(service.isUsingTestCredentials());
     }
 }

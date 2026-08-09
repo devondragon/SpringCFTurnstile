@@ -43,12 +43,17 @@ public class TurnstileServiceConfig {
 
     /**
      * Creates a TurnstileValidationService bean.
+     * <p>
+     * Backs off if the consuming application supplies its own {@link TurnstileValidationService}
+     * bean, regardless of that bean's name.
+     * </p>
      *
      * @param restClient the preconfigured REST client for Turnstile calls
      * @param metrics the TurnstileMetrics implementation to use
      * @return a configured TurnstileValidationService instance
      */
     @Bean
+    @ConditionalOnMissingBean(TurnstileValidationService.class)
     public TurnstileValidationService turnstileValidationService(
             @Qualifier("turnstileRestClient") RestClient restClient,
             TurnstileMetrics metrics) {
@@ -57,10 +62,17 @@ public class TurnstileServiceConfig {
 
     /**
      * Creates a RestClient bean for Turnstile API interactions.
+     * <p>
+     * Backs off only when the consuming application defines its own bean named
+     * {@code turnstileRestClient}; a type-based check is deliberately avoided here so that an
+     * unrelated {@link RestClient} bean elsewhere in the application does not silently disable
+     * Turnstile validation.
+     * </p>
      *
      * @return a configured RestClient instance
      */
     @Bean(name = "turnstileRestClient")
+    @ConditionalOnMissingBean(name = "turnstileRestClient")
     public RestClient turnstileRestClient() {
         log.info("Creating Turnstile REST client with endpoint: {}", properties.getUrl());
         log.info("Turnstile REST client timeouts - connect: {}s, read: {}s",

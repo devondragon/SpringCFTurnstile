@@ -3,6 +3,7 @@ package com.digitalsanctuary.cf.turnstile.service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,6 +39,19 @@ public class TurnstileValidationService {
     private static final String UNKNOWN = "unknown";
     private static final int MIN_TOKEN_LENGTH = 20;
 
+    /**
+     * Cloudflare's published test sitekeys. Depending on the key these always pass (1x), always fail (2x), or force an interactive challenge (3x).
+     */
+    private static final Set<String> CLOUDFLARE_TEST_SITEKEYS = Set.of("1x00000000000000000000AA",
+            "2x00000000000000000000AB", "1x00000000000000000000BB", "2x00000000000000000000BB",
+            "3x00000000000000000000FF");
+
+    /**
+     * Cloudflare's published test secrets. Depending on the secret these always pass (1x), always fail (2x), or report a spent token (3x).
+     */
+    private static final Set<String> CLOUDFLARE_TEST_SECRETS = Set.of("1x0000000000000000000000000000000AA",
+            "2x0000000000000000000000000000000AA", "3x0000000000000000000000000000000AA");
+
     private final RestClient turnstileRestClient;
     private final TurnstileConfigProperties properties;
     private final TurnstileMetrics metrics;
@@ -69,9 +83,12 @@ public class TurnstileValidationService {
     }
 
     /**
-     * Method called after the bean is initialized. Logs the startup information and validates the required configuration.
-     *
-     * @throws TurnstileConfigurationException if required configuration properties are missing
+     * Method called after the bean is initialized. Logs the resolved Turnstile configuration.
+     * <p>
+     * Configuration problem reporting (missing secret or URL, Cloudflare test credentials in use) lives in
+     * {@link com.digitalsanctuary.cf.turnstile.config.TurnstileStartupReporter}, which is registered unconditionally so those checks still run when a
+     * consuming application supplies its own {@code TurnstileValidationService} bean.
+     * </p>
      */
     @PostConstruct
     public void onStartup() {
@@ -81,13 +98,33 @@ public class TurnstileValidationService {
         log.info("Turnstile Secret: {}", properties.getSecret() != null && !properties.getSecret().isBlank() ? "[CONFIGURED]" : "[NOT CONFIGURED]");
         log.info("Turnstile Metrics enabled: {}", properties.getMetrics().isEnabled());
         log.info("Turnstile Health Check enabled: {}", properties.getMetrics().isHealthCheckEnabled());
+    }
 
-        if (properties.getSecret() == null || properties.getSecret().isBlank()) {
-            log.error("Turnstile secret key is not configured. Validation will fail.");
-        }
-        if (properties.getUrl() == null || properties.getUrl().isBlank()) {
-            log.error("Turnstile URL is not configured. Validation will fail.");
-        }
+    /**
+     * Returns true when the configured sitekey or secret is one of Cloudflare's published test
+     * credentials (see https://developers.cloudflare.com/turnstile/troubleshooting/testing/).
+     * Such credentials make validation always pass or always fail, depending on the key, so they
+     * must never be used in production.
+     *
+     * @return true if the configured credentials are Cloudflare test credentials
+     */
+    public boolean isUsingTestCredentials() {
+        return isTestCredentials(properties.getSitekey(), properties.getSecret());
+    }
+
+    /**
+     * Returns true when the supplied sitekey or secret is one of Cloudflare's published test
+     * credentials (see https://developers.cloudflare.com/turnstile/troubleshooting/testing/).
+     * Such credentials make validation always pass or always fail, depending on the key, so they
+     * must never be used in production. Both arguments are null-safe.
+     *
+     * @param sitekey the configured Turnstile sitekey, may be null
+     * @param secret the configured Turnstile secret, may be null
+     * @return true if either value is a Cloudflare test credential
+     */
+    public static boolean isTestCredentials(String sitekey, String secret) {
+        return (sitekey != null && CLOUDFLARE_TEST_SITEKEYS.contains(sitekey))
+                || (secret != null && CLOUDFLARE_TEST_SECRETS.contains(secret));
     }
 
     /**

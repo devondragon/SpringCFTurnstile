@@ -1,10 +1,11 @@
 package com.digitalsanctuary.cf.turnstile.filter;
 
 import java.io.IOException;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties;
 import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,10 +26,12 @@ import lombok.extern.slf4j.Slf4j;
  *
  * Configuration properties:
  * <ul>
- * <li><b>ds.cf.turnstile.login.submissionPath</b>: The path to intercept for login submissions (default: <code>/login</code>).</li>
- * <li><b>ds.cf.turnstile.login.redirectUrl</b>: The URL to redirect to when captcha validation fails (default:
+ * <li><b>ds.cf.turnstile.login.enabled</b>: Whether this filter is registered at all (default: <code>false</code>). Since 2.1.0, the filter
+ * registers only when this property is explicitly set to <code>true</code>.</li>
+ * <li><b>ds.cf.turnstile.login.submission-path</b>: The path to intercept for login submissions (default: <code>/login</code>).</li>
+ * <li><b>ds.cf.turnstile.login.redirect-url</b>: The URL to redirect to when captcha validation fails (default:
  * <code>/login?error=captcha</code>).</li>
- * <li><b>ds.cf.turnstile.token.parameterName</b>: The name of the request parameter containing the Turnstile token (default:
+ * <li><b>ds.cf.turnstile.token.parameter-name</b>: The name of the request parameter containing the Turnstile token (default:
  * <code>cf-turnstile-response</code>).</li>
  * </ul>
  *
@@ -38,19 +41,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "ds.cf.turnstile.login.enabled", havingValue = "true", matchIfMissing = false)
 @RequiredArgsConstructor
 public class TurnstileCaptchaFilter extends OncePerRequestFilter {
 
     private final TurnstileValidationService validationService;
 
-    @Value("${ds.cf.turnstile.login.submissionPath:/login}")
-    private String loginSubmissionPath;
-
-    @Value("${ds.cf.turnstile.login.redirectUrl:/login?error=captcha}")
-    private String loginRedirectUrl;
-
-    @Value("${ds.cf.turnstile.token.parameterName:cf-turnstile-response}")
-    private String turnstileTokenParameterName;
+    private final TurnstileConfigProperties properties;
 
     /**
      * Filters incoming HTTP requests to validate the Turnstile captcha token during login submissions.
@@ -69,14 +66,14 @@ public class TurnstileCaptchaFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().equals(loginSubmissionPath) && "POST".equalsIgnoreCase(request.getMethod())) {
-            String token = request.getParameter(turnstileTokenParameterName);
+        if (request.getServletPath().equals(properties.getLogin().getSubmissionPath()) && "POST".equalsIgnoreCase(request.getMethod())) {
+            String token = request.getParameter(properties.getToken().getParameterName());
             boolean valid = validationService.validateTurnstileResponse(token, getClientIp(request));
             if (valid) {
                 filterChain.doFilter(request, response);
             } else {
                 log.warn("Turnstile captcha validation failed for request: {}", request.getServletPath());
-                response.sendRedirect(loginRedirectUrl);
+                response.sendRedirect(properties.getLogin().getRedirectUrl());
             }
         } else {
             filterChain.doFilter(request, response);

@@ -47,6 +47,12 @@
             "defaultValue": 10
         },
         {
+            "name": "ds.cf.turnstile.login.enabled",
+            "type": "java.lang.Boolean",
+            "description": "Register the TurnstileCaptchaFilter to validate captcha tokens on login form submissions. Off by default since 2.1.0; set to true to enable the filter.",
+            "defaultValue": false
+        },
+        {
             "name": "ds.cf.turnstile.login.submission-path",
             "type": "java.lang.String",
             "description": "Path to intercept for login submissions when using TurnstileCaptchaFilter",
