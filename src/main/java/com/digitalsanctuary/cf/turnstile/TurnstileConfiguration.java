@@ -1,14 +1,17 @@
 package com.digitalsanctuary.cf.turnstile;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.health.autoconfigure.contributor.ConditionalOnEnabledHealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileHealthIndicator;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileMetricsConfig;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileServiceConfig;
+import com.digitalsanctuary.cf.turnstile.config.TurnstileStartupReporter;
 import com.digitalsanctuary.cf.turnstile.filter.TurnstileCaptchaFilter;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +59,20 @@ public class TurnstileConfiguration {
     @ConditionalOnClass(name = "org.springframework.boot.health.contributor.HealthIndicator")
     @Import(TurnstileHealthIndicator.class)
     static class TurnstileHealthConfiguration {
+    }
+
+    /**
+     * Registers the startup reporter unconditionally, so configuration problems (missing secret or URL, Cloudflare test credentials) and the login
+     * filter registration state are always reported — even when the consuming application overrides the library's service bean.
+     *
+     * @param properties the Turnstile configuration properties
+     * @param captchaFilterProvider provider used to detect whether the login captcha filter bean is registered
+     * @return the startup reporter
+     */
+    @Bean
+    public TurnstileStartupReporter turnstileStartupReporter(TurnstileConfigProperties properties,
+            ObjectProvider<TurnstileCaptchaFilter> captchaFilterProvider) {
+        return new TurnstileStartupReporter(properties, captchaFilterProvider);
     }
 
     /**
