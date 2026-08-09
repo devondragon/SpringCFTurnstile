@@ -46,7 +46,8 @@ public class TurnstileHealthIndicator implements HealthIndicator {
                     Health.up().withDetail("url", properties.getUrl()).withDetail("validationCount", validationService.getValidationCount())
                             .withDetail("successCount", validationService.getSuccessCount())
                             .withDetail("errorCount", validationService.getErrorCount()).withDetail("errorRate", String.format("%.2f%%", errorRate))
-                            .withDetail("responseTimeAvg", String.format("%.2fms", validationService.getAverageResponseTime()));
+                            .withDetail("responseTimeAvg", String.format("%.2fms", validationService.getAverageResponseTime()))
+                            .withDetail("usingTestCredentials", validationService.isUsingTestCredentials());
 
             // If error rate exceeds threshold, report as DOWN
             if (errorRate > errorThreshold) {
