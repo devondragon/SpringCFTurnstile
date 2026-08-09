@@ -2,6 +2,7 @@ package com.digitalsanctuary.cf.turnstile.filter;
 
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
  *
  * Configuration properties:
  * <ul>
+ * <li><b>ds.cf.turnstile.login.enabled</b>: Whether this filter is registered at all (default: <code>false</code>). Since 2.1.0, the filter
+ * registers only when this property is explicitly set to <code>true</code>.</li>
  * <li><b>ds.cf.turnstile.login.submissionPath</b>: The path to intercept for login submissions (default: <code>/login</code>).</li>
  * <li><b>ds.cf.turnstile.login.redirectUrl</b>: The URL to redirect to when captcha validation fails (default:
  * <code>/login?error=captcha</code>).</li>
@@ -38,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "ds.cf.turnstile.login.enabled", havingValue = "true", matchIfMissing = false)
 @RequiredArgsConstructor
 public class TurnstileCaptchaFilter extends OncePerRequestFilter {
 
