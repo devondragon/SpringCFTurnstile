@@ -91,12 +91,13 @@ ds:
         error-threshold: 10
       # Optional filter configuration (only needed if using TurnstileCaptchaFilter)
       login:
-        enabled: false                   # Registers TurnstileCaptchaFilter (default: false). The filter does
-                                          # nothing unless this is set to true (changed in 2.1.0).
-        submissionPath: /login           # Path to intercept (default: /login)
-        redirectUrl: /login?error=captcha # Redirect URL on failure
+        enabled: true                     # Creates the TurnstileCaptchaFilter bean. Defaults to false;
+                                          # unless this is true the filter bean is not created at all
+                                          # (changed in 2.1.0), and injecting it fails startup.
+        submission-path: /login           # Path to intercept (default: /login)
+        redirect-url: /login?error=captcha # Redirect URL on failure
       token:
-        parameterName: cf-turnstile-response  # Token parameter name (default)
+        parameter-name: cf-turnstile-response  # Token parameter name (default)
 ```
 
 
@@ -311,10 +312,12 @@ Configure the following properties in your `application.properties` or `applicat
 
 ```properties
 ds.cf.turnstile.login.enabled=true
-ds.cf.turnstile.login.submissionPath=/login
-ds.cf.turnstile.login.redirectUrl=/login?error=captcha
-ds.cf.turnstile.token.parameterName=cf-turnstile-response
+ds.cf.turnstile.login.submission-path=/login
+ds.cf.turnstile.login.redirect-url=/login?error=captcha
+ds.cf.turnstile.token.parameter-name=cf-turnstile-response
 ```
+
+The camelCase forms (`submissionPath`, `redirectUrl`, `parameterName`) used in earlier README versions still bind via Spring's relaxed binding, so existing configuration keeps working.
 
 ### Integration with Spring Security
 

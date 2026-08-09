@@ -72,6 +72,16 @@ public class TurnstileConfigProperties {
     private Metrics metrics = new Metrics();
 
     /**
+     * Configuration for the optional login captcha filter.
+     */
+    private Login login = new Login();
+
+    /**
+     * Configuration for the Turnstile token request parameter.
+     */
+    private Token token = new Token();
+
+    /**
      * Nested class for metrics configuration properties.
      */
     @Data
@@ -93,5 +103,42 @@ public class TurnstileConfigProperties {
          * Defaults to 10.
          */
         private int errorThreshold = 10;
+    }
+
+    /**
+     * Nested class for the optional {@link com.digitalsanctuary.cf.turnstile.filter.TurnstileCaptchaFilter} configuration properties.
+     */
+    @Data
+    public static class Login {
+
+        /**
+         * Whether the login captcha filter is registered. Defaults to false; since 2.1.0 the filter
+         * is created only when this is explicitly set to true.
+         */
+        private boolean enabled = false;
+
+        /**
+         * The servlet path the login captcha filter intercepts. Defaults to {@code /login}.
+         */
+        private String submissionPath = "/login";
+
+        /**
+         * The URL the login captcha filter redirects to when captcha validation fails.
+         * Defaults to {@code /login?error=captcha}.
+         */
+        private String redirectUrl = "/login?error=captcha";
+    }
+
+    /**
+     * Nested class for Turnstile token request parameter configuration properties.
+     */
+    @Data
+    public static class Token {
+
+        /**
+         * The name of the request parameter carrying the Turnstile token.
+         * Defaults to {@code cf-turnstile-response}.
+         */
+        private String parameterName = "cf-turnstile-response";
     }
 }
