@@ -1,3 +1,38 @@
+## [2.1.0] - 2026-08-09
+# Changelog
+
+## Features
+- **Bump README version references to 2.1.0 ahead of release (#106):** Updated the `README.md` to reflect the new library version, 2.1.0, aligning with upcoming release plans.
+- **Make TurnstileCaptchaFilter opt-in (#106):** The `TurnstileCaptchaFilter` is now registered conditionally based on `ds.cf.turnstile.login.enabled` being set to `true`. This is an opt-in feature which previously was always included, even if not configured.
+
+## Fixes
+- **Health Indicator Details and Reporter Registration (#106):** Improved `TurnstileHealthIndicator` to report `usingTestCredentials` alongside its counters and fixed issues with health indicator test names.
+- **Move Startup Checks to a Reporter Bean (#106):** Ensured that startup warnings for missing secrets, URLs, or test credentials always surface, even if a consumer uses custom implementations of service beans.
+- **Property Binding Fix for TurnstileCaptchaFilter (#106):** Properties for the `TurnstileCaptchaFilter` are now managed through `TurnstileConfigProperties` instead of using `@Value` placeholders. This fixes issues with relaxed binding failing on property names.
+
+## Breaking Changes
+- **TurnstileCaptchaFilter Registration (#106):** Before version 2.1.0, the filter was registered automatically. It's now opt-in, meaning applications must set `ds.cf.turnstile.login.enabled=true` to use this filter.
+
+## Documentation
+- **Release Notes for 2.1.0 (#106):** Comprehensive notes documenting behavior changes, new features, and fixes in version 2.1.0 are now available.
+- **Feature Documentation Updates in README (#106):** Added a section explaining the feature to detect Cloudflare test credentials, and detailed documentation regarding the opt-in nature of `TurnstileCaptchaFilter`.
+
+## Testing
+- **Additional Tests for Override Behaviors (#106):** New tests have been added to ensure beans like `TurnstileValidationService` and `turnstileRestClient` can be correctly overridden by user implementations without causing conflicts.
+
+## Other Changes
+- **Dependency Updates:**
+  - Bumped various dependencies, including `org.junit.jupiter:junit-jupiter` from 6.0.3 to 6.1.2, and `gradle-wrapper` series updates from 9.4.0 up to 9.6.1. These updates improve stability and add minor features without breaking existing functionalities.
+  - Increased `springBootVersion` incrementally from 4.0.6 to 4.1.0, allowing access to new Spring Boot improvements.
+
+- **DevOps:**
+  - Updated dependencies used by other tools such as Gradle plugins for maintaining smooth build processes (`com.github.ben-manes.versions` and `com.vanniktech.maven.publish`).
+
+## Refactoring
+- **Log Level Comparison Adjustment (#106):** Addressed PMD warnings by comparing the log levels with `.equals()`, enhancing code quality and maintaining best programming practices.
+
+This changelog is designed to provide clear insights into the latest improvements, fixes, and changes in version 2.1.0, enabling developers and users to understand what's new and what needs attention before upgrading.
+
 ## [2.0.1] - 2026-05-01
 # Changelog
 
