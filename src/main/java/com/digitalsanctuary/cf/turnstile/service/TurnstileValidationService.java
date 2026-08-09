@@ -3,6 +3,7 @@ package com.digitalsanctuary.cf.turnstile.service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,6 +38,15 @@ import lombok.extern.slf4j.Slf4j;
 public class TurnstileValidationService {
     private static final String UNKNOWN = "unknown";
     private static final int MIN_TOKEN_LENGTH = 20;
+
+    /** Cloudflare's published test sitekeys (always-pass, always-fail, interactive). */
+    private static final Set<String> CLOUDFLARE_TEST_SITEKEYS = Set.of("1x00000000000000000000AA",
+            "2x00000000000000000000AB", "1x00000000000000000000BB", "2x00000000000000000000BB",
+            "3x00000000000000000000FF");
+
+    /** Cloudflare's published test secrets (always-pass, always-fail, token-spent). */
+    private static final Set<String> CLOUDFLARE_TEST_SECRETS = Set.of("1x0000000000000000000000000000000AA",
+            "2x0000000000000000000000000000000AA", "3x0000000000000000000000000000000AA");
 
     private final RestClient turnstileRestClient;
     private final TurnstileConfigProperties properties;
@@ -88,6 +98,28 @@ public class TurnstileValidationService {
         if (properties.getUrl() == null || properties.getUrl().isBlank()) {
             log.error("Turnstile URL is not configured. Validation will fail.");
         }
+
+        if (isUsingTestCredentials()) {
+            log.warn("========================================================");
+            log.warn("Turnstile is configured with Cloudflare TEST credentials.");
+            log.warn("Captcha validation is running in test mode and provides NO protection.");
+            log.warn("Do not use these credentials in production.");
+            log.warn("========================================================");
+        }
+    }
+
+    /**
+     * Returns true when the configured sitekey or secret is one of Cloudflare's published test
+     * credentials (see https://developers.cloudflare.com/turnstile/troubleshooting/testing/),
+     * meaning validation is running in test mode and provides no real protection.
+     *
+     * @return true if the configured credentials are Cloudflare test credentials
+     */
+    public boolean isUsingTestCredentials() {
+        String sitekey = properties.getSitekey();
+        String secret = properties.getSecret();
+        return (sitekey != null && CLOUDFLARE_TEST_SITEKEYS.contains(sitekey))
+                || (secret != null && CLOUDFLARE_TEST_SECRETS.contains(secret));
     }
 
     /**
