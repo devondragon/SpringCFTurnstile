@@ -67,7 +67,7 @@ class TurnstileStartupReporterTest {
     }
 
     private List<String> messagesAt(Level level) {
-        return appender.list.stream().filter(event -> event.getLevel() == level).map(ILoggingEvent::getFormattedMessage).toList();
+        return appender.list.stream().filter(event -> level.equals(event.getLevel())).map(ILoggingEvent::getFormattedMessage).toList();
     }
 
     @Test
