@@ -4,7 +4,7 @@
 
 - `TurnstileCaptchaFilter` is now opt-in. It registers only when
   `ds.cf.turnstile.login.enabled=true`. Previously it registered automatically whenever the
-  library was on the classpath, intercepting POSTs to `ds.cf.turnstile.login.submissionPath`
+  library was on the classpath, intercepting POSTs to `ds.cf.turnstile.login.submission-path`
   (default `/login`). **If you use the login filter, add `ds.cf.turnstile.login.enabled=true`
   when upgrading.** If you only use `TurnstileValidationService` directly, no change is needed.
   Apps that inject `TurnstileCaptchaFilter` directly (e.g. into a `SecurityFilterChain`, per

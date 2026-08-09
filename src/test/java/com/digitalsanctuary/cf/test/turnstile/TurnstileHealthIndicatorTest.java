@@ -60,12 +60,15 @@ class TurnstileHealthIndicatorTest {
     }
 
     @Test
-    void reportsDownWithoutTestCredentialDetailWhenSecretIsMissing() {
+    void reportsDownWithReasonOnlyWhenSecretIsMissing() {
         properties.setSecret("  ");
 
         Health health = healthIndicator.health();
 
+        // The missing-secret check returns before the detail chain is built, so the result carries the reason and nothing else -
+        // in particular no usingTestCredentials detail.
         assertThat(health.getStatus()).isEqualTo(Status.DOWN);
+        assertThat(health.getDetails()).containsOnlyKeys("reason");
         assertThat(health.getDetails()).containsEntry("reason", "Turnstile secret key is not configured");
     }
 

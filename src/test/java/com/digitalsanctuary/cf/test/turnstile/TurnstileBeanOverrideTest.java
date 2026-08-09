@@ -14,6 +14,7 @@ import org.springframework.web.client.RestClient;
 
 import com.digitalsanctuary.cf.turnstile.TurnstileConfiguration;
 import com.digitalsanctuary.cf.turnstile.config.TurnstileConfigProperties;
+import com.digitalsanctuary.cf.turnstile.config.TurnstileStartupReporter;
 import com.digitalsanctuary.cf.turnstile.metrics.TurnstileMetrics;
 import com.digitalsanctuary.cf.turnstile.service.TurnstileValidationService;
 
@@ -40,6 +41,9 @@ class TurnstileBeanOverrideTest {
             assertThat(context).hasNotFailed();
             assertThat(context).hasSingleBean(TurnstileValidationService.class);
             assertThat(context).hasBean("customTurnstileValidationService");
+            // The startup reporter must stay unconditional: overriding the service is exactly the case
+            // that used to lose the missing-config and test-credential checks.
+            assertThat(context).hasSingleBean(TurnstileStartupReporter.class);
         });
     }
 
