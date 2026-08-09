@@ -91,6 +91,8 @@ ds:
         error-threshold: 10
       # Optional filter configuration (only needed if using TurnstileCaptchaFilter)
       login:
+        enabled: false                   # Registers TurnstileCaptchaFilter (default: false). The filter does
+                                          # nothing unless this is set to true (changed in 2.1.0).
         submissionPath: /login           # Path to intercept (default: /login)
         redirectUrl: /login?error=captcha # Redirect URL on failure
       token:
@@ -200,6 +202,14 @@ If you don't need to validate the client IP address, you can use the simplified 
 boolean turnstileValid = turnstileValidationService.validateTurnstileResponse(turnstileResponse);
 ```
 
+#### Test Credentials Detection
+
+`TurnstileValidationService.isUsingTestCredentials()` returns `true` when the configured sitekey or secret
+matches one of [Cloudflare's published test credentials](https://developers.cloudflare.com/turnstile/troubleshooting/testing/).
+Those credentials always pass (or always fail, depending on which test key you use) and provide no real bot
+protection. If test credentials are detected, the service also logs a WARN banner at startup, so an
+always-pass test key left in a production configuration doesn't go unnoticed.
+
 
 ## Security Best Practices
 
@@ -293,11 +303,14 @@ Spring Cloudflare Turnstile uses Spring Boot's auto-configuration to seamlessly 
 
 This project provides an optional helper component, **TurnstileCaptchaFilter**, which can be used to add Turnstile captcha validation to your Spring Security Form Login flow.
 
+As of 2.1.0, this filter is opt-in: it is only registered when `ds.cf.turnstile.login.enabled=true`. Previously it registered automatically whenever the library was on the classpath. If you rely on this filter, set `ds.cf.turnstile.login.enabled=true` when upgrading.
+
 ### Configuration
 
 Configure the following properties in your `application.properties` or `application.yml`:
 
 ```properties
+ds.cf.turnstile.login.enabled=true
 ds.cf.turnstile.login.submissionPath=/login
 ds.cf.turnstile.login.redirectUrl=/login?error=captcha
 ds.cf.turnstile.token.parameterName=cf-turnstile-response
@@ -305,7 +318,7 @@ ds.cf.turnstile.token.parameterName=cf-turnstile-response
 
 ### Integration with Spring Security
 
-To use the filter with form login, add it to your security configuration before the default authentication filter:
+To use the filter with form login, add it to your security configuration before the default authentication filter. The `TurnstileCaptchaFilter` bean only exists when `ds.cf.turnstile.login.enabled=true`, so autowiring it as shown below requires that property to be set:
 
 ```java
 @Configuration
@@ -336,7 +349,7 @@ public class SecurityConfig {
 - The filter checks if the request's servlet path matches the configured login submission path and that the HTTP method is POST.
 - It validates the captcha token (expected to be sent under the configured parameter name) using the TurnstileValidationService.
 - On a successful captcha validation, the request continues through the filter chain. Otherwise, it logs a warning and redirects to the login page.
-- This component is completely optional; if you do not require captcha validation for your login flow, do not enable or configure this filter.
+- This component is opt-in: it is not registered unless `ds.cf.turnstile.login.enabled=true`. If you do not require captcha validation for your login flow, leave this property unset (or `false`) and the filter will not be created.
 
 ## Contributing
 
