@@ -19,7 +19,7 @@ group = 'com.digitalsanctuary.cf.turnstile'
 description = 'SpringBoot Cloudflare Turnstile Library'
 
 ext {
-    springBootVersion = '4.1.0'
+    springBootVersion = '4.1.1'
     lombokVersion = '1.18.46'
 }
 
